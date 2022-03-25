@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Tell browser this is html with utf-8 text encoding. -->
+        <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+        <meta content="utf-8" http-equiv="encoding">
+
+        <title>Emostroop</title>
+
+        <!-- Import jspsych -->
+        <script src="https://web-experiments.lab.hum.uu.nl/jspsych/7.0.0/jspsych.js"></script>
+        <!-- Import jspsych plugins-->
+        <script src="https://web-experiments.lab.hum.uu.nl/jspsych/7.0.0/plugin-html-keyboard-response.js"></script>
+        <script src="https://web-experiments.lab.hum.uu.nl/jspsych/7.0.0/plugin-html-button-response.js"></script>
+        <script src="https://web-experiments.lab.hum.uu.nl/jspsych/7.0.0/plugin-survey-html-form.js"></script>
+        <script src="https://web-experiments.lab.hum.uu.nl/jspsych/7.0.0/plugin-survey-multi-choice.js"></script>
+        <script src="https://web-experiments.lab.hum.uu.nl/jspsych/7.0.0/plugin-survey-multi-select.js"></script>
+
+        <!-- jspsych style sheets -->
+        <link href="https://web-experiments.lab.hum.uu.nl/jspsych/7.0.0/jspsych.css" rel="stylesheet" type="text/css"/>
+
+        <!-- Uil OTS libraries -->
+        <script src="https://web-experiments.lab.hum.uu.nl/jspsych/uil-utils/0.1/jspsych-uil-utils.js"></script>
+        <link href="https://web-experiments.lab.hum.uu.nl/jspsych/uil-utils/0.1/fonts.css" rel="stylesheet" type="text/css"/>
+
+        <!-- Uil OTS scripts -->
+        <script src="globals.js"></script>
+        <script src="consent.js"></script>
+        <script src="instructions.js"></script>
+        <script src="stimuli.js"></script>
+        <script src="survey.js"></script>
+        <script src="practice-stats.js"></script>
+        <script src="main.js"></script>
+
+        <style>
+            .jspsych-survey-multi-choice-text {
+                text-align: left !important;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- We use jsPsych to fill the body -->
+    </body>
+    <script>
+
+
+window.addEventListener (
+    'load',
+    main
+);
+    </script>
+</html>
+
