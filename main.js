@@ -94,31 +94,6 @@ function getTimeline(stimuli) {
 
     let pstats = new PracticeStats(REQ_PRAC_CORRECT);
 
-//    let word_loop = {
-//        words : [],
-//        timeline : [present_word],
-//        loop_function : function () {
-//            // Determine whether to continue
-//            if (word_loop.words.length === 0) {
-//                return false;
-//            }
-//            // Setup new stimulus
-//            let css_class = "stimulus ";
-//            if (word_loop.words.length > 1) {
-//                css_class += "white";
-//            }
-//            else {
-//                css_class += jsPsych.timelineVariable("color");
-//            }
-//            present_word.stimulus =
-//                `<p class="${css_class}">${word_loop.words[0]}</p>`;
-//
-//            // remove presented word.
-//            word_loop.words = word_loop.words.slice(1);
-//            return true;
-//        }
-//    }
-
     let present_word = {
         type : jsPsychHtmlKeyboardResponse,
         choices : [],
@@ -137,13 +112,21 @@ function getTimeline(stimuli) {
 
             return `<p class="stimulus color">${word}</p>`
         }
-    }
+    };
 
-    let word_procedure= {
+    let word_procedure = {
         timeline : [
-            {}
+            present_word,
         ],
-    }
+        timeline_variables : null,
+    };
+
+    let target_procedure = {
+        timeline : [
+            present_target
+        ],
+        timeline_variables : null,
+    };
 
     let practice_procedure = {
         last_correct : undefined,
@@ -241,7 +224,7 @@ function getTimeline(stimuli) {
             practice_results
         ],
         loop_function : function () {
-            let result = pstats.practicePassed() == false;
+            let result = pstats.practicePassed() === false;
             pstats.reset();
             practice_loop.loop_count += 1;
             return result;
@@ -292,7 +275,6 @@ function getTimeline(stimuli) {
 
 // this function will eventually run the jsPsych timeline
 function kickOffExperiment(stimuli, timeline) {
-
 
     let subject_id = uil.session.isActive() ?
         uil.session.subjectId() : jsPsych.randomization.randomID(8);

@@ -202,8 +202,59 @@ function pickRandomList() {
         return empty_array;
     }
     let num_lists = TEST_ITEMS.length;
-    var shuffled_range = jsPsych.randomization.repeat(range(num_lists), 1)
-    var retlist = TEST_ITEMS[shuffled_range[0]];
-    return retlist
+    let shuffled_range = jsPsych.randomization.repeat(range(num_lists), 1);
+    return TEST_ITEMS[shuffled_range[0]];
 }
 
+/**
+ * This function walks over every item in this file. It creates
+ * a timeline for every trial, where the first n words are presented
+ * in a default color and the last is described in a
+ */
+function createTrialTimelines() {
+
+    function stimulusDuration(word) {
+        console.assert(typeof word === "string");
+        const BASE = 290;
+        return BASE + word.length * 30;
+    }
+
+    function createTimeline (stimulus) {
+        let timeline = [];
+        console.assert(typeof stimulus.sentence === "string");
+        let words = stimulus.sentence.split(/\s+/);
+        console.assert(words.length > 1);
+        let leading = words.slice(0, -1);
+        let final = words.slice(-1);
+        console.assert(words.length === leading.length + final.length);
+        leading.forEach((word) => {
+            timeline.push(
+                {
+                    word : word,
+                    color : DEFAULT_COLOR,
+                    trial_duration : stimulusDuration(word),
+                    choices : [],
+                }
+            );
+        })
+        timeline.push(
+            {
+                word : final[0],
+                color : stimulus.color,
+                trial_duration : null, // Test stimulus, response required.
+                choices : RESPONSE_KEYS
+            }
+        );
+        return timeline;
+    }
+
+    PRACTICE_ITEMS.forEach((stimulus) => {
+        createTimeline(stimulus);
+    });
+
+    TEST_ITEMS.forEach((list) =>{
+        list.table.forEach((stimulus) => {
+            createTimeline(stimulus);
+        });
+    });
+}

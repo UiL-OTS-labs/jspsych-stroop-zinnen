@@ -13,7 +13,7 @@ const ACCESS_KEY = '00000000-0000-0000-0000-000000000000';
 // Whether or not to pseudorandomize the test items
 const PSEUDO_RANDOMIZE = true;
 // The maximum number of items with a similar itemtype in a row
-const MAX_SUCCEEDING_ITEMS_OF_TYPE = 2
+const MAX_SUCCEEDING_ITEMS_OF_TYPE = 2;
 
 // This defines the dimensions of the canvas on which
 // the sentences are drawn. Keep in mind, that you'll exclude
@@ -21,6 +21,9 @@ const MAX_SUCCEEDING_ITEMS_OF_TYPE = 2
 // high.
 const MIN_WIDTH = 1000;
 const MIN_HEIGHT = 600;
+
+// The default color (for words that don't require a response)
+const DEFAULT_COLOR = "black";
 
 const USED_COLORS = [
     "rood",
