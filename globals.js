@@ -76,14 +76,10 @@ const COL_TRANS = {
     "red"   : "rood",
     "green" : "groen",
     "blue"  : "blauw",
-    "yellow": "geel"
+    "yellow": "geel",
 };
 
 const FEEDBACK_DURATION = 1000;
-
-const WORD_FONT_FAM     = "DejavuSansMono";
-const WORD_FONT_SIZE    = "50px";
-const WORD_FONT_WEIGHT  = "bold";
 
 // The percentage correct responses required in order to advance
 // from practice to test phase.

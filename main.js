@@ -92,20 +92,58 @@ function getTimeline(stimuli) {
         }
     };
 
-    let present_word = function() {
-        let color = jsPsych.timelineVariable('color');
-        let word  = jsPsych.timelineVariable('word');
+    let pstats = new PracticeStats(REQ_PRAC_CORRECT);
 
-        let style = `color:${color};`                   +
-                    `font-family:${WORD_FONT_FAM};`     +
-                    `font-size:${WORD_FONT_SIZE};`      +
-                    `font-weight=${WORD_FONT_WEIGHT}`;
+//    let word_loop = {
+//        words : [],
+//        timeline : [present_word],
+//        loop_function : function () {
+//            // Determine whether to continue
+//            if (word_loop.words.length === 0) {
+//                return false;
+//            }
+//            // Setup new stimulus
+//            let css_class = "stimulus ";
+//            if (word_loop.words.length > 1) {
+//                css_class += "white";
+//            }
+//            else {
+//                css_class += jsPsych.timelineVariable("color");
+//            }
+//            present_word.stimulus =
+//                `<p class="${css_class}">${word_loop.words[0]}</p>`;
+//
+//            // remove presented word.
+//            word_loop.words = word_loop.words.slice(1);
+//            return true;
+//        }
+//    }
 
-        let html = `<p style="${style}">${word}</p>`;
-        return html;
+    let present_word = {
+        type : jsPsychHtmlKeyboardResponse,
+        choices : [],
+        stimulus : function () {
+            let word = jsPsych.timelineVariable('word');
+            return `<p class="stimulus default_color">${word}</p>`;
+        }
+    };
+
+    let present_target = {
+        type : jsPsychHtmlKeyboardResponse,
+        color : null,
+        word : null,
+        stimulus : function () {
+            let color = present_target.color;
+
+            return `<p class="stimulus color">${word}</p>`
+        }
     }
 
-    let pstats = new PracticeStats(REQ_PRAC_CORRECT);
+    let word_procedure= {
+        timeline : [
+            {}
+        ],
+    }
 
     let practice_procedure = {
         last_correct : undefined,
@@ -233,10 +271,10 @@ function getTimeline(stimuli) {
     timeline.push(welcome_screen);
 
     // Obtain informed consent.
-    timeline.push(consent_procedure);
+    // timeline.push(consent_procedure);
 
     // add survey
-    timeline.push(survey_procedure);
+    // timeline.push(survey_procedure);
     
     // Add the different parts of the experiment to the timeline
     timeline.push(instruction_screen_practice1);

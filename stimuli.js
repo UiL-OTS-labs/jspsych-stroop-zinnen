@@ -10,6 +10,8 @@ const EMOTIONAL     = "EMOTIONAL";
 const PLUGIN_NAME   = "html-keyboard-response";
 
 // colors used for CSS properties, so don't translate
+const WHITE = "white";
+const BLACK = "black";
 const RED = "red";
 const GREEN = "green";
 const YELLOW = "yellow";
@@ -30,38 +32,38 @@ const LISTS = [
 const PRACTICE_ITEMS = [
     {
         id : 1,
-        item_type : PRACTICE, // CONGRUENT
-        word : "rood",
+        item_type : PRACTICE, // CONGRUENT,
+        sentence : "De fiets is rood",
         color : RED
     },
     {
         id : 2,
         item_type : PRACTICE, // INCONGRUENT
-        word : "rood",
-        color : BLUE 
+        sentence : "De bal is rood",
+        color : BLUE
     },
     {
         id : 3,
         item_type : PRACTICE, // CONGRUENT
-        word : "groen",
+        sentence : "Het gras is groen",
         color : GREEN,
     },
     {
         id : 4,
         item_type : PRACTICE, // INCONGRUENT
-        word : "rood",
+        sentence : "De auto is rood",
         color : YELLOW
     },
     {
         id : 5,
         item_type : PRACTICE, // NEUTRAL
-        word : "boek",
+        sentence :"Hij leest een boek",
         color : GREEN
     },
     {
         id : 6,
         item_type : EMOTIONAL,
-        word : "verdrietig",
+        sentence : "Zij voelt zich verdrietig",
         color : BLUE
     }
 
@@ -75,37 +77,37 @@ const LIST_GROUP1 = [
     {
         id : 1,
         item_type : CONGRUENT,
-        word : "rood",
+        sentence : "De fiets is rood",
         color : RED
     },
     {
         id : 2,
         item_type : INCONGRUENT,
-        word : "rood",
-        color : BLUE 
+        sentence : "De lucht is rood",
+        color : BLUE
     },
     {
         id : 3,
         item_type : CONGRUENT,
-        word : "groen",
+        sentence : "Het gras is groen",
         color : GREEN,
     },
     {
         id : 4,
         item_type : INCONGRUENT,
-        word : "rood",
+        sentence : "Geel is niet rood",
         color : YELLOW
     },
     {
         id : 5,
         item_type : NEUTRAL,
-        word : "vork",
+        sentence : "Hij eet met een vork",
         color : GREEN
     },
     {
         id : 6,
         item_type : EMOTIONAL,
-        word : "traan",
+        sentence : "Zij laat een traan",
         color : BLUE
     }
 ];
@@ -118,37 +120,37 @@ const LIST_GROUP2 = [
     {
         id : 1,
         item_type : INCONGRUENT,
-        word : "rood",
+        sentence : "De fiets is rood",
         color : BLUE, 
     },
     {
         id : 2,
         item_type : CONGRUENT,
-        word : "rood",
+        sentence : "De lucht is rood",
         color : RED 
     },
     {
         id : 3,
         item_type : INCONGRUENT,
-        word : "groen",
+        sentence : "Het gras is groen",
         color : RED,
     },
     {
         id : 4,
         item_type : CONGRUENT,
-        word : "geel",
+        sentence : "rood is niet geel",
         color : YELLOW
     },
     {
         id : 5,
         item_type : NEUTRAL,
-        word : "vork",
+        sentence : "Hij eet met een vork",
         color : YELLOW
     },
     {
         id : 6,
         item_type : EMOTIONAL,
-        word : "traan",
+        sentence : "Zij laat een traan",
         color : RED
     }
 ];
