@@ -1,5 +1,5 @@
 
-p.stimulus {
+p.word {
     font-family: DejavuSansMono;
     font-size: 50px;
     font-weight: bold;
@@ -7,6 +7,10 @@ p.stimulus {
 
 p.white {
     color : white;
+}
+
+p.black {
+    color : black;
 }
 
 p.default_color {

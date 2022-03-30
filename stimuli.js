@@ -1,4 +1,5 @@
-'use strict'
+import {jsPsych} from "./init-jspsych.js";
+import * as global from "./globals.js";
 
 // Item types
 const PRACTICE      = "PRACTICE";
@@ -180,7 +181,7 @@ const TEST_ITEMS = [
  *
  * @returns {object} object with list_name and table fields
  */
-function getPracticeItems() {
+export function getPracticeItems() {
     return {list_name : "practice", table : PRACTICE_ITEMS};
 }
 
@@ -192,7 +193,7 @@ function getPracticeItems() {
  *
  * @returns {object} object with list_name and table fields
  */
-function pickRandomList() {
+export function pickRandomList() {
     let range = function (n) {
         let empty_array = [];
         let i;
@@ -211,7 +212,7 @@ function pickRandomList() {
  * a timeline for every trial, where the first n words are presented
  * in a default color and the last is described in a
  */
-function createTrialTimelines() {
+export function createTrialTimelines() {
 
     function stimulusDuration(word) {
         console.assert(typeof word === "string");
@@ -231,30 +232,30 @@ function createTrialTimelines() {
             timeline.push(
                 {
                     word : word,
-                    color : DEFAULT_COLOR,
+                    color : global.DEFAULT_COLOR,
                     trial_duration : stimulusDuration(word),
                     choices : [],
                 }
             );
-        })
+        });
         timeline.push(
             {
                 word : final[0],
                 color : stimulus.color,
                 trial_duration : null, // Test stimulus, response required.
-                choices : RESPONSE_KEYS
+                choices : global.RESPONSE_KEYS
             }
         );
         return timeline;
     }
 
     PRACTICE_ITEMS.forEach((stimulus) => {
-        createTimeline(stimulus);
+        stimulus.sentence_timeline = createTimeline(stimulus);
     });
 
     TEST_ITEMS.forEach((list) =>{
         list.table.forEach((stimulus) => {
-            createTimeline(stimulus);
+            stimulus.sentence_timeline= createTimeline(stimulus);
         });
     });
 }

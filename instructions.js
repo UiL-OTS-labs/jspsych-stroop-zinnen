@@ -1,3 +1,4 @@
+import * as global from "./globals.js"
 
 const WELCOME_INSTRUCTION = `
 <h1>
@@ -57,7 +58,7 @@ function colorResponseTable() {
     let instruction = "";
 
     function responseString(response_key) {
-        for (const color in correct_responses) {
+        for (const color in global.correct_responses) {
             if (correct_responses[color] === response_key) {
                 let tcolor = COL_TRANS[color];
                 return `De toets <b>${response_key}</b> staat voor ${tcolor}`;
