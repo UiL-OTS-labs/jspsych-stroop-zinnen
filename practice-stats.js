@@ -1,10 +1,9 @@
-"use strict";
 
 /**
  * A small class to keep track of how well a participant performs the
  * practice phase of the experiment
  */
-class PracticeStats {
+export default class PracticeStats {
 
     /**
      * Create a new PracticeStats instance.

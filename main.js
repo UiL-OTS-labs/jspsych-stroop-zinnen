@@ -3,8 +3,25 @@ import {
     pickRandomList,
     createTrialTimelines
 } from "./stimuli.js";
+
 import {jsPsych} from "./init-jspsych.js";
-import * as global from "./globals.js";
+
+import {
+    setupInstructions,
+    WELCOME_INSTRUCTION,
+    PRE_PRACTICE_INSTRUCTION1,
+    key_instruction,
+    PRE_PRACTICE_INSTRUCTION3,
+    PRE_TEST_INSTRUCTION,
+    POST_TEST_INSTRUCTION,
+    PREPARE_INSTRUCTION,
+    colorResponseTable,
+    FINISHED_NO_CONSENT
+} from "./instructions.js";
+
+import PracticeStats from "./practice-stats.js";
+import {consent_procedure, consent_given} from "./consent.js";
+import {survey_procedure} from "./survey.js";
 
 export {main};
 
@@ -13,16 +30,17 @@ function setupResponseKeys() {
     let indices = [0, 1];
     let shuffled = jsPsych.randomization.shuffle(indices);
     let index = shuffled[0];
-    global.correct_responses = global.LIST_CORRECT_RESPONSES[index];
+    correct_responses = LIST_CORRECT_RESPONSES[index];
 }
 
 /**
- *
  * @param {[{}]}testitems
+ * @param {PracticeStats|null} prac_stats
  * @return
  */
-function getSentenceTimeline(testitems) {
+function getSentenceTimeline(testitems , prac_stats=null) {
     let timeline = [];
+    console.assert(prac_stats instanceof PracticeStats || prac_stats === null);
     testitems.forEach((item) => {
         let words = item.sentence_timeline.slice(0, -1);
         let target = item.sentence_timeline.slice(-1)[0];
@@ -46,16 +64,38 @@ function getSentenceTimeline(testitems) {
                 type : jsPsychHtmlKeyboardResponse,
                 choices : RESPONSE_KEYS,
                 trial_duration : null,
-                stimulus : target_stimulus
+                stimulus : target_stimulus,
+                on_finish : function (data) {
+                    data.correct =
+                        correct_responses[target.color] === data.response;
+                    if (prac_stats) {
+                        prac_stats.appendResult(data.correct);
+                    }
+                }
             }
         )
+        if (prac_stats) {
+            let feedback = {
+                type : jsPsychHtmlKeyboardResponse,
+                trial_duration : FEEDBACK_DURATION,
+                stimulus : function () {
+                    let last = jsPsych.data.getLastTrialData().values()[0];
+                    let csscls = last.correct ? "correct" : "incorrect";
+                    let feedback = last.correct ?
+                        CORRECT_BUTTON_TEXT : INCORRECT_BUTTON_TEXT;
+                    return `<p class="feedback ${csscls}">${feedback}</p>`;
+                }
+            }
+            timeline.push(feedback);
+        }
     })
     return timeline;
 }
 
+
 function main() {
     // Make sure you have updated your key in globals.js
-    uil.setAccessKey(global.ACCESS_KEY);
+    uil.setAccessKey(ACCESS_KEY);
     uil.stopIfExperimentClosed();
 
     createTrialTimelines();
@@ -85,7 +125,7 @@ function getTimeline(stimuli) {
     let welcome_screen = {
         type : jsPsychHtmlKeyboardResponse,
         stimulus : WELCOME_INSTRUCTION,
-        choices : [" "],
+        choices : [CONTINUE_KEY],
         response_ends_trial : true
     };
 
@@ -124,7 +164,8 @@ function getTimeline(stimuli) {
         trial_duration : FINISH_TEXT_DUR,
         on_load : function () {
             if (consent_given) {
-                uil.saveData();
+                let json = jsPsych.data.get().json();
+                uil.saveJson(json);
             }
             else {
                 document.body.innerHTML = FINISHED_NO_CONSENT;
@@ -187,7 +228,10 @@ function getTimeline(stimuli) {
         }
     }
 
-    let practice_timeline = getSentenceTimeline(getPracticeItems().table);
+    let practice_timeline = getSentenceTimeline(
+        getPracticeItems().table,
+        pstats
+    );
     let practice = {
         timeline : practice_timeline
     };
@@ -236,10 +280,10 @@ function getTimeline(stimuli) {
     timeline.push(welcome_screen);
 
     // Obtain informed consent.
-    // timeline.push(consent_procedure);
+    timeline.push(consent_procedure);
 
     // add survey
-    // timeline.push(survey_procedure);
+    timeline.push(survey_procedure);
     
     // Add the different parts of the experiment to the timeline
     timeline.push(instruction_screen_practice1);

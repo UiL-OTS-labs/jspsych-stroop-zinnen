@@ -32,3 +32,16 @@ p.green {
 p.blue {
     color : blue;
 }
+
+p.feedback {
+    font-family: DejavuSansMono;
+    font-size: 30px;
+}
+
+p.incorrect {
+    color : red;
+}
+
+p.correct {
+    color : green;
+}

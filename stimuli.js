@@ -1,5 +1,4 @@
 import {jsPsych} from "./init-jspsych.js";
-import * as global from "./globals.js";
 
 // Item types
 const PRACTICE      = "PRACTICE";
@@ -232,7 +231,7 @@ export function createTrialTimelines() {
             timeline.push(
                 {
                     word : word,
-                    color : global.DEFAULT_COLOR,
+                    color : DEFAULT_COLOR,
                     trial_duration : stimulusDuration(word),
                     choices : [],
                 }
@@ -243,7 +242,7 @@ export function createTrialTimelines() {
                 word : final[0],
                 color : stimulus.color,
                 trial_duration : null, // Test stimulus, response required.
-                choices : global.RESPONSE_KEYS
+                choices : RESPONSE_KEYS
             }
         );
         return timeline;

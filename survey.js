@@ -1,4 +1,4 @@
-import * as global from "./globals.js"
+import {jsPsych} from "./init-jspsych.js";
 // global repeat boolean
 // If the survey is filled out incorrectly the questionaire
 // is repeated.
@@ -169,8 +169,8 @@ let survey_review = {
             `;
     },
     choices: [
-        global.INCORRECT_BUTTON_TEXT,
-        global.CORRECT_BUTTON_TEXT
+        INCORRECT_BUTTON_TEXT,
+        CORRECT_BUTTON_TEXT
     ],
     response_ends_trial: true,
     on_finish: function(data) {
@@ -179,7 +179,7 @@ let survey_review = {
     }
 };
 
-let survey_procedure = {
+export let survey_procedure = {
     timeline : [
         survey_1,
         survey_2,

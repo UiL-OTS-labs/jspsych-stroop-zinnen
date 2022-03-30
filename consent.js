@@ -1,7 +1,7 @@
-import * as global from "./globals.js"
+import {jsPsych} from "./init-jspsych.js";
 
 // Keeps track whether or not consent has been given.
-let consent_given = false;
+export let consent_given = false;
 
 /*
  * This fragment of html will be displayed in the beginning of you experiment.
@@ -172,7 +172,7 @@ let consent_block = {
             options: [CONSENT_STATEMENT], 
             horizontal: true,
             required: false,  
-            button_label: global.CONTINUE_BUTTON_TEXT,
+            button_label: CONTINUE_BUTTON_TEXT,
             name: CONSENT_REFERENCE_NAME
         }
     ],
@@ -185,11 +185,10 @@ let consent_block = {
 
 // Is displayed when no consent has been given.
 let no_consent_end_screen = {
-    type: 'html-button-response',
     type: jsPsychHtmlButtonResponse,
     stimulus: DEBRIEF_MESSAGE_NO_CONSENT,
     choices: [],
-    trial_duration: global.FINISH_TEXT_DUR,
+    trial_duration: FINISH_TEXT_DUR,
     on_finish: function (data){
         jsPsych.endExperiment()
     }
@@ -225,7 +224,7 @@ let if_node_consent = {
     }
 }
 
-let consent_procedure = {
+export let consent_procedure = {
     timeline: [consent_block, if_node_consent]
 }
 
