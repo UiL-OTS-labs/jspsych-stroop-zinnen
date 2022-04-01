@@ -8,6 +8,7 @@ import {jsPsych} from "./init-jspsych.js";
 
 import {
     setupInstructions,
+    colorResponseTable,
     WELCOME_INSTRUCTION,
     PRE_PRACTICE_INSTRUCTION1,
     key_instruction,
@@ -15,7 +16,6 @@ import {
     PRE_TEST_INSTRUCTION,
     POST_TEST_INSTRUCTION,
     PREPARE_INSTRUCTION,
-    colorResponseTable,
     FINISHED_NO_CONSENT
 } from "./instructions.js";
 
@@ -257,20 +257,9 @@ function getTimeline(stimuli) {
         }
     }
 
-//    let test_procedure = {
-//        timeline : [
-//            {   // presents the word
-//                type : jsPsychHtmlKeyboardResponse,
-//                stimulus : present_word,
-//                choices : ['1', '2', '9', '0'],
-//                on_finish : function (data) {
-//                    let color = jsPsych.timelineVariable('color');
-//                    data.correct = data.response === correct_responses[color];
-//                }
-//            }
-//        ],
-//        timeline_variables : stimuli.table
-//    };
+    let experimental_items = {
+       timeline : getSentenceTimeline(stimuli.table)
+    };
 
     //////////////// timeline /////////////////////////////////
     let timeline = [];
@@ -293,7 +282,7 @@ function getTimeline(stimuli) {
     timeline.push(practice_loop);
     timeline.push(end_practice_screen);
     timeline.push(prepare_procedure);
-//    timeline.push(test_procedure);
+    timeline.push(experimental_items);
     timeline.push(end_experiment);
 
     return timeline
