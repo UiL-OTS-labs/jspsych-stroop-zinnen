@@ -1,4 +1,4 @@
-'use strict'
+import {jsPsych} from "./init-jspsych.js";
 
 // Item types
 const PRACTICE      = "PRACTICE";
@@ -10,6 +10,8 @@ const EMOTIONAL     = "EMOTIONAL";
 const PLUGIN_NAME   = "html-keyboard-response";
 
 // colors used for CSS properties, so don't translate
+const WHITE = "white";
+const BLACK = "black";
 const RED = "red";
 const GREEN = "green";
 const YELLOW = "yellow";
@@ -30,38 +32,38 @@ const LISTS = [
 const PRACTICE_ITEMS = [
     {
         id : 1,
-        item_type : PRACTICE, // CONGRUENT
-        word : "rood",
+        item_type : PRACTICE, // CONGRUENT,
+        sentence : "De fiets is rood",
         color : RED
     },
     {
         id : 2,
         item_type : PRACTICE, // INCONGRUENT
-        word : "rood",
-        color : BLUE 
+        sentence : "De bal is rood",
+        color : BLUE
     },
     {
         id : 3,
         item_type : PRACTICE, // CONGRUENT
-        word : "groen",
+        sentence : "Het gras is groen",
         color : GREEN,
     },
     {
         id : 4,
         item_type : PRACTICE, // INCONGRUENT
-        word : "rood",
+        sentence : "De auto is rood",
         color : YELLOW
     },
     {
         id : 5,
         item_type : PRACTICE, // NEUTRAL
-        word : "boek",
+        sentence :"Hij leest een boek",
         color : GREEN
     },
     {
         id : 6,
         item_type : EMOTIONAL,
-        word : "verdrietig",
+        sentence : "Zij voelt zich verdrietig",
         color : BLUE
     }
 
@@ -75,37 +77,37 @@ const LIST_GROUP1 = [
     {
         id : 1,
         item_type : CONGRUENT,
-        word : "rood",
+        sentence : "De fiets is rood",
         color : RED
     },
     {
         id : 2,
         item_type : INCONGRUENT,
-        word : "rood",
-        color : BLUE 
+        sentence : "De lucht is rood",
+        color : BLUE
     },
     {
         id : 3,
         item_type : CONGRUENT,
-        word : "groen",
+        sentence : "Het gras is groen",
         color : GREEN,
     },
     {
         id : 4,
         item_type : INCONGRUENT,
-        word : "rood",
+        sentence : "Geel is niet rood",
         color : YELLOW
     },
     {
         id : 5,
         item_type : NEUTRAL,
-        word : "vork",
+        sentence : "Hij eet met een vork",
         color : GREEN
     },
     {
         id : 6,
         item_type : EMOTIONAL,
-        word : "traan",
+        sentence : "Zij laat een traan",
         color : BLUE
     }
 ];
@@ -118,37 +120,37 @@ const LIST_GROUP2 = [
     {
         id : 1,
         item_type : INCONGRUENT,
-        word : "rood",
+        sentence : "De fiets is rood",
         color : BLUE, 
     },
     {
         id : 2,
         item_type : CONGRUENT,
-        word : "rood",
+        sentence : "De lucht is rood",
         color : RED 
     },
     {
         id : 3,
         item_type : INCONGRUENT,
-        word : "groen",
+        sentence : "Het gras is groen",
         color : RED,
     },
     {
         id : 4,
         item_type : CONGRUENT,
-        word : "geel",
+        sentence : "rood is niet geel",
         color : YELLOW
     },
     {
         id : 5,
         item_type : NEUTRAL,
-        word : "vork",
+        sentence : "Hij eet met een vork",
         color : YELLOW
     },
     {
         id : 6,
         item_type : EMOTIONAL,
-        word : "traan",
+        sentence : "Zij laat een traan",
         color : RED
     }
 ];
@@ -178,7 +180,7 @@ const TEST_ITEMS = [
  *
  * @returns {object} object with list_name and table fields
  */
-function getPracticeItems() {
+export function getPracticeItems() {
     return {list_name : "practice", table : PRACTICE_ITEMS};
 }
 
@@ -190,7 +192,7 @@ function getPracticeItems() {
  *
  * @returns {object} object with list_name and table fields
  */
-function pickRandomList() {
+export function pickRandomList() {
     let range = function (n) {
         let empty_array = [];
         let i;
@@ -200,8 +202,59 @@ function pickRandomList() {
         return empty_array;
     }
     let num_lists = TEST_ITEMS.length;
-    var shuffled_range = jsPsych.randomization.repeat(range(num_lists), 1)
-    var retlist = TEST_ITEMS[shuffled_range[0]];
-    return retlist
+    let shuffled_range = jsPsych.randomization.repeat(range(num_lists), 1);
+    return TEST_ITEMS[shuffled_range[0]];
 }
 
+/**
+ * This function walks over every item in this file. It creates
+ * a timeline for every trial, where the first n words are presented
+ * in a default color and the last is described in a
+ */
+export function createTrialTimelines() {
+
+    function stimulusDuration(word) {
+        console.assert(typeof word === "string");
+        const BASE = 290;
+        return BASE + word.length * 30;
+    }
+
+    function createTimeline (stimulus) {
+        let timeline = [];
+        console.assert(typeof stimulus.sentence === "string");
+        let words = stimulus.sentence.split(/\s+/);
+        console.assert(words.length > 1);
+        let leading = words.slice(0, -1);
+        let final = words.slice(-1);
+        console.assert(words.length === leading.length + final.length);
+        leading.forEach((word) => {
+            timeline.push(
+                {
+                    word : word,
+                    color : DEFAULT_COLOR,
+                    trial_duration : stimulusDuration(word),
+                    choices : [],
+                }
+            );
+        });
+        timeline.push(
+            {
+                word : final[0],
+                color : stimulus.color,
+                trial_duration : null, // Test stimulus, response required.
+                choices : RESPONSE_KEYS
+            }
+        );
+        return timeline;
+    }
+
+    PRACTICE_ITEMS.forEach((stimulus) => {
+        stimulus.sentence_timeline = createTimeline(stimulus);
+    });
+
+    TEST_ITEMS.forEach((list) =>{
+        list.table.forEach((stimulus) => {
+            stimulus.sentence_timeline= createTimeline(stimulus);
+        });
+    });
+}

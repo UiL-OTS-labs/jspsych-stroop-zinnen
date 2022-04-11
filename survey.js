@@ -1,4 +1,4 @@
-
+import {jsPsych} from "./init-jspsych.js";
 // global repeat boolean
 // If the survey is filled out incorrectly the questionaire
 // is repeated.
@@ -120,7 +120,7 @@ const survey_2 = {
         }
     ],
 
-    on_finish: function(data){
+    on_finish: function(data) {
         let response = data.response;
         Object.keys(response).forEach(
             function (key) {
@@ -168,7 +168,10 @@ let survey_review = {
             <p>Is this information correct?</p>
             `;
     },
-    choices: [INCORRECT_BUTTON_TEXT, CORRECT_BUTTON_TEXT],
+    choices: [
+        INCORRECT_BUTTON_TEXT,
+        CORRECT_BUTTON_TEXT
+    ],
     response_ends_trial: true,
     on_finish: function(data) {
         // Repeat the survey if the participant finds the survey fields incorrect
@@ -176,7 +179,7 @@ let survey_review = {
     }
 };
 
-let survey_procedure = {
+export let survey_procedure = {
     timeline : [
         survey_1,
         survey_2,

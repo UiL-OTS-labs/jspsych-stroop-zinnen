@@ -1,5 +1,5 @@
 
-const WELCOME_INSTRUCTION = `
+export const WELCOME_INSTRUCTION = `
 <h1>
     Beste deelnemer,
 </h1>
@@ -22,7 +22,7 @@ const WELCOME_INSTRUCTION = `
     Druk op de spatiebalk om door te gaan.
 </p>`;
 
-const PRE_PRACTICE_INSTRUCTION1 =
+export const PRE_PRACTICE_INSTRUCTION1 =
     "<h1>"                                                              +
         "Vervolg instructies."                                          +
     "</h1>"                                                             +
@@ -43,7 +43,7 @@ const PRE_PRACTICE_INSTRUCTION1 =
     "</p>";
 
 // Is setup in setupInstructions below.
-let key_instruction = undefined;
+export let key_instruction = undefined;
 
 /**
  * Returns the instruction about the desired responsekey for a 
@@ -51,8 +51,7 @@ let key_instruction = undefined;
  *
  * Return {string} a number of lines with a break on the end. 
  */
-
-function colorResponseTable() {
+export function colorResponseTable() {
 
     let instruction = "";
 
@@ -84,10 +83,8 @@ function colorResponseTable() {
 /**
  * Sets up the right instructions for the desired keys in the experiment.
  */
-function setupInstructions()
+export function setupInstructions()
 {
-
-    
     let instruction = `<p>
         Om de kleur van een woord te benoemen, druk je op een toets. 
         Je gebruikt de toetsen 1, 2, 9 en 0.
@@ -103,7 +100,7 @@ function setupInstructions()
     key_instruction = instruction;
 }
 
-const PRE_PRACTICE_INSTRUCTION3 =
+export const PRE_PRACTICE_INSTRUCTION3 =
     "<p>"                                                               +
         "Je gebruikt je wijs- en middelvinger "                         +
         "van beide handen om de toetsen in te drukken. "                +
@@ -121,7 +118,7 @@ const PRE_PRACTICE_INSTRUCTION3 =
         "Druk op de spatie balk om verder te gaan."                     +
     "</p>";
 
-const PRE_TEST_INSTRUCTION = 
+export const PRE_TEST_INSTRUCTION =
     "<p>"                                                               +
         "Einde van het oefen gedeelte."                                 +
     "</p>"                                                              +
@@ -129,15 +126,15 @@ const PRE_TEST_INSTRUCTION =
         "<i>Druk op de spatiebalk om door te gaan.</i>"                 + 
     "</p>";
 
-const PREPARE_INSTRUCTION =
+export const PREPARE_INSTRUCTION =
     "<h2>Zet je vingers klaar op de knoppen de taak begint</h2>";
 
 
-const POST_TEST_INSTRUCTION =
+export const POST_TEST_INSTRUCTION =
     "<h1>Einde van het experiment</h1>"                                 +
     "<h2>Hartelijk bedankt voor het meedoen!</h2>";
 
-const FINISHED_NO_CONSENT = 
+export const FINISHED_NO_CONSENT =
     "<h1>Het experient gaat niet door omdat je niet akkoord ben gegaan " +
     "met het geïnformeerde toestemmingsformulier</h1>"                   +
     "<p>Je kan dit tabblad sluiten.</p>";

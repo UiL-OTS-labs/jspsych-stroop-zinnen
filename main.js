@@ -1,12 +1,30 @@
+import {
+    getPracticeItems,
+    pickRandomList,
+    createTrialTimelines
+} from "./stimuli.js";
 
-const jsPsych = initJsPsych(
-    {
-        exclusions: {
-            min_width : MIN_WIDTH,
-            min_height : MIN_HEIGHT
-        }
-    }
-);
+import {jsPsych} from "./init-jspsych.js";
+
+import {
+    setupInstructions,
+    colorResponseTable,
+    WELCOME_INSTRUCTION,
+    PRE_PRACTICE_INSTRUCTION1,
+    key_instruction,
+    PRE_PRACTICE_INSTRUCTION3,
+    PRE_TEST_INSTRUCTION,
+    POST_TEST_INSTRUCTION,
+    PREPARE_INSTRUCTION,
+    FINISHED_NO_CONSENT
+} from "./instructions.js";
+
+import PracticeStats from "./practice-stats.js";
+import {consent_procedure, consent_given} from "./consent.js";
+import {survey_procedure} from "./survey.js";
+
+export {main};
+
 
 function setupResponseKeys() {
     let indices = [0, 1];
@@ -15,10 +33,72 @@ function setupResponseKeys() {
     correct_responses = LIST_CORRECT_RESPONSES[index];
 }
 
+/**
+ * @param {[{}]}testitems
+ * @param {PracticeStats|null} prac_stats
+ * @return
+ */
+function getSentenceTimeline(testitems , prac_stats=null) {
+    let timeline = [];
+    console.assert(prac_stats instanceof PracticeStats || prac_stats === null);
+    testitems.forEach((item) => {
+        let words = item.sentence_timeline.slice(0, -1);
+        let target = item.sentence_timeline.slice(-1)[0];
+
+        words.forEach((word) => {
+            let color = word.color;
+            let stimulus = `<p class="word ${color}">${word.word}</p>`
+            let present_word = {
+                type : jsPsychHtmlKeyboardResponse,
+                trial_duration : word.trial_duration,
+                choices : [],
+                stimulus : stimulus
+            };
+            timeline.push(present_word);
+        });
+
+        let target_stimulus =
+            `<p class="word ${target.color}">${target.word}</p>`;
+        timeline.push(
+            {
+                type : jsPsychHtmlKeyboardResponse,
+                choices : RESPONSE_KEYS,
+                trial_duration : null,
+                stimulus : target_stimulus,
+                on_finish : function (data) {
+                    data.correct =
+                        correct_responses[target.color] === data.response;
+                    if (prac_stats) {
+                        prac_stats.appendResult(data.correct);
+                    }
+                }
+            }
+        )
+        if (prac_stats) {
+            let feedback = {
+                type : jsPsychHtmlKeyboardResponse,
+                trial_duration : FEEDBACK_DURATION,
+                stimulus : function () {
+                    let last = jsPsych.data.getLastTrialData().values()[0];
+                    let csscls = last.correct ? "correct" : "incorrect";
+                    let feedback = last.correct ?
+                        CORRECT_BUTTON_TEXT : INCORRECT_BUTTON_TEXT;
+                    return `<p class="feedback ${csscls}">${feedback}</p>`;
+                }
+            }
+            timeline.push(feedback);
+        }
+    })
+    return timeline;
+}
+
+
 function main() {
     // Make sure you have updated your key in globals.js
     uil.setAccessKey(ACCESS_KEY);
     uil.stopIfExperimentClosed();
+
+    createTrialTimelines();
 
     // Option 1: client side randomization:
     let stimuli = pickRandomList();
@@ -45,7 +125,7 @@ function getTimeline(stimuli) {
     let welcome_screen = {
         type : jsPsychHtmlKeyboardResponse,
         stimulus : WELCOME_INSTRUCTION,
-        choices : [" "],
+        choices : [CONTINUE_KEY],
         response_ends_trial : true
     };
 
@@ -84,7 +164,8 @@ function getTimeline(stimuli) {
         trial_duration : FINISH_TEXT_DUR,
         on_load : function () {
             if (consent_given) {
-                uil.saveData();
+                let json = jsPsych.data.get().json();
+                uil.saveJson(json);
             }
             else {
                 document.body.innerHTML = FINISHED_NO_CONSENT;
@@ -92,55 +173,13 @@ function getTimeline(stimuli) {
         }
     };
 
-    let present_word = function() {
-        let color = jsPsych.timelineVariable('color');
-        let word  = jsPsych.timelineVariable('word');
-
-        let style = `color:${color};`                   +
-                    `font-family:${WORD_FONT_FAM};`     +
-                    `font-size:${WORD_FONT_SIZE};`      +
-                    `font-weight=${WORD_FONT_WEIGHT}`;
-
-        let html = `<p style="${style}">${word}</p>`;
-        return html;
-    }
-
     let pstats = new PracticeStats(REQ_PRAC_CORRECT);
-
-    let practice_procedure = {
-        last_correct : undefined,
-        timeline : [
-            {   // presents the word
-                type : jsPsychHtmlKeyboardResponse,
-                stimulus : present_word,
-                choices : ['1', '2', '9', '0'],
-                on_finish : function (data) {
-                    let color = jsPsych.timelineVariable('color');
-                    practice_procedure.last_correct = data.response === correct_responses[color];
-                    data.correct = data.response === correct_responses[color];
-                    pstats.appendResult(data.correct);
-                }
-            },
-            {   // presents the feedback.
-                type : jsPsychHtmlKeyboardResponse,
-                choices : [],
-                trial_duration : FEEDBACK_DURATION,
-                stimulus : function () {
-                    if (practice_procedure.last_correct)
-                        return "<p>correct</p>";
-                    else
-                        return "<p>incorrect</p>";
-                }
-            }
-        ],
-        timeline_variables : PRACTICE_ITEMS
-    }
 
     let prepare_procedure = { // count down with a blank screen in the last iteration
         timeline : [
             {
                 type : jsPsychHtmlKeyboardResponse,
-                trial_duration : 1000, // 1 second
+                trial_duration : 500, // 0.5 seconds
                 stimulus : function() {
                     let count = jsPsych.timelineVariable('count');
                     let html = "";
@@ -189,6 +228,14 @@ function getTimeline(stimuli) {
         }
     }
 
+    let practice_timeline = getSentenceTimeline(
+        getPracticeItems().table,
+        pstats
+    );
+    let practice = {
+        timeline : practice_timeline
+    };
+
     let practice_loop = {
         loop_count : 0,
         timeline : [
@@ -199,34 +246,23 @@ function getTimeline(stimuli) {
                 }
             },
             prepare_procedure,
-            practice_procedure,
+            practice,
             practice_results
         ],
         loop_function : function () {
-            let result = pstats.practicePassed() == false;
+            let result = pstats.practicePassed() === false;
             pstats.reset();
             practice_loop.loop_count += 1;
             return result;
         }
     }
 
-    let test_procedure = {
-        timeline : [
-            {   // presents the word
-                type : jsPsychHtmlKeyboardResponse,
-                stimulus : present_word,
-                choices : ['1', '2', '9', '0'],
-                on_finish : function (data) {
-                    let color = jsPsych.timelineVariable('color');
-                    data.correct = data.response === correct_responses[color];
-                }
-            }
-        ],
-        timeline_variables : stimuli.table 
+    let experimental_items = {
+       timeline : getSentenceTimeline(stimuli.table)
     };
 
     //////////////// timeline /////////////////////////////////
-    var timeline = [];
+    let timeline = [];
 
     // Welcome the participant and guide them through the 
     // consent forms and survey.
@@ -246,7 +282,7 @@ function getTimeline(stimuli) {
     timeline.push(practice_loop);
     timeline.push(end_practice_screen);
     timeline.push(prepare_procedure);
-    timeline.push(test_procedure);
+    timeline.push(experimental_items);
     timeline.push(end_experiment);
 
     return timeline
@@ -254,7 +290,6 @@ function getTimeline(stimuli) {
 
 // this function will eventually run the jsPsych timeline
 function kickOffExperiment(stimuli, timeline) {
-
 
     let subject_id = uil.session.isActive() ?
         uil.session.subjectId() : jsPsych.randomization.randomID(8);
@@ -265,7 +300,7 @@ function kickOffExperiment(stimuli, timeline) {
     if (PSEUDO_RANDOMIZE) {
         let shuffled = uil.randomization.randomizeStimuli(
             test_items,
-            max_same_type = MAX_SUCCEEDING_ITEMS_OF_TYPE
+            MAX_SUCCEEDING_ITEMS_OF_TYPE
         );
         if (shuffled !== null)
             test_items = shuffled;

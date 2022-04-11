@@ -13,7 +13,7 @@ const ACCESS_KEY = '00000000-0000-0000-0000-000000000000';
 // Whether or not to pseudorandomize the test items
 const PSEUDO_RANDOMIZE = true;
 // The maximum number of items with a similar itemtype in a row
-const MAX_SUCCEEDING_ITEMS_OF_TYPE = 2
+const MAX_SUCCEEDING_ITEMS_OF_TYPE = 2;
 
 // This defines the dimensions of the canvas on which
 // the sentences are drawn. Keep in mind, that you'll exclude
@@ -21,6 +21,9 @@ const MAX_SUCCEEDING_ITEMS_OF_TYPE = 2
 // high.
 const MIN_WIDTH = 1000;
 const MIN_HEIGHT = 600;
+
+// The default color (for words that don't require a response)
+const DEFAULT_COLOR = "black";
 
 const USED_COLORS = [
     "rood",
@@ -51,7 +54,7 @@ const CONTINUE_KEY = " ";
 // is on screen.
 const FINISH_TEXT_DUR = 30000;
 
-// Stores the correct reponse for a given color.
+// Stores the correct response for a given color.
 let correct_responses = undefined;
 
 // A list of mappings between colors and desired responses.
@@ -76,14 +79,10 @@ const COL_TRANS = {
     "red"   : "rood",
     "green" : "groen",
     "blue"  : "blauw",
-    "yellow": "geel"
+    "yellow": "geel",
 };
 
 const FEEDBACK_DURATION = 1000;
-
-const WORD_FONT_FAM     = "DejavuSansMono";
-const WORD_FONT_SIZE    = "50px";
-const WORD_FONT_WEIGHT  = "bold";
 
 // The percentage correct responses required in order to advance
 // from practice to test phase.
