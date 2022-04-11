@@ -1,11 +1,14 @@
-# jspsych-stroop
-Strooptask using jspsych
+# jspsych-stroop-zinnen
+Strooptask using jsPsych with sentences as stimuli.
 
 ## Description
-This task is a general form of a STROOP task. Currently, It uses a CONGRUENT 
-stimuli e.g. the word "red" in a reddish font type and INCONGRUENT e.g.
-"blue" in a yellowish font type. Just like a regular font type. The general
-flow is as follows:
+This task is an adaptation of the general form of a STROOP task. Currently,
+the task presents sentences word after word where the last word requires a
+response from the participant. So the first words are in a default color,
+whereas the last has a specific color, which requires a forced choice from the
+participant. It uses CONGRUENT stimuli e.g. the word "red" in a reddish font
+type and INCONGRUENT e.g. "blue" in a yellowish font type. Just like a regular
+font type. The flow of the experiment is as follows:
 - A participant is welcomed to the task
 - The participant should agree with the informed consent form.
   - If the participant doesn't agree, the experiment terminates.
