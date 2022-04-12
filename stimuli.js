@@ -7,8 +7,6 @@ const INCONGRUENT   = "INCONGRUENT";
 const NEUTRAL       = "NEUTRAL";
 const EMOTIONAL     = "EMOTIONAL";
 
-const PLUGIN_NAME   = "html-keyboard-response";
-
 // colors used for CSS properties, so don't translate
 const WHITE = "white";
 const BLACK = "black";
@@ -66,12 +64,16 @@ const PRACTICE_ITEMS = [
         sentence : "Zij voelt zich verdrietig",
         color : BLUE
     }
-
 ];
 
 /*
- * In this list there is a stimulus, if a word or group of words starts with a
- * '#' it's reaction time will be recorded. So don't put any '#" elsewhere...
+ * Stimuli in these lists are described by their:
+ *  - id, it identifies which stimulus has been presented
+ *  - item_type, it determines the condition of the stimulus.
+ *     In the examples there are IN-, CONGRUENT, NEUTRAL and EMOTIONAL stimuli
+ *  - sentence, the sentence is broken up in words and the last word requires
+ *     a response and is presented in a target color.
+ *  - color, The color of the last word, RED, GREEN, YELLOW or BLUE.
  */
 const LIST_GROUP1 = [
     {
@@ -207,7 +209,7 @@ export function pickRandomList() {
 }
 
 /**
- * This function walks over every item in this file. It creates
+ * This function walks over every item in the lists of stimuli. It creates
  * a timeline for every trial, where the first n words are presented
  * in a default color and the last is described in a
  */
