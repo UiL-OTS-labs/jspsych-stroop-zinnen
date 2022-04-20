@@ -1,6 +1,6 @@
 import {
     getPracticeItems,
-    pickRandomList,
+    getTestItems,
     createTrialTimelines
 } from "./stimuli.js";
 
@@ -17,7 +17,8 @@ import {
     PRE_TEST_INSTRUCTION,
     POST_TEST_INSTRUCTION,
     PREPARE_INSTRUCTION,
-    FINISHED_NO_CONSENT
+    FINISHED_NO_CONSENT,
+    PAUSE_INSTRUCTION
 } from "./instructions.js";
 
 import PracticeStats from "./practice-stats.js";
@@ -68,7 +69,7 @@ function getSentenceTimeline(testitems , prac_stats=null) {
                 stimulus : target_stimulus,
                 on_finish : function (data) {
                     data.correct =
-                        correct_responses[target.color] === data.response;
+                        global.correct_responses[target.color] === data.response;
                     if (prac_stats) {
                         prac_stats.appendResult(data.correct);
                     }
@@ -83,7 +84,7 @@ function getSentenceTimeline(testitems , prac_stats=null) {
                     let last = jsPsych.data.getLastTrialData().values()[0];
                     let csscls = last.correct ? "correct" : "incorrect";
                     let feedback = last.correct ?
-                        CORRECT_BUTTON_TEXT : INCORRECT_BUTTON_TEXT;
+                        global.CORRECT_BUTTON_TEXT : global.INCORRECT_BUTTON_TEXT;
                     return `<p class="feedback ${csscls}">${feedback}</p>`;
                 }
             }
@@ -102,7 +103,7 @@ function main() {
     createTrialTimelines();
 
     // Option 1: client side randomization:
-    let stimuli = pickRandomList();
+    let stimuli = getTestItems();
     kickOffExperiment(stimuli, getTimeline(stimuli));
 
     // Option 2: server side balancing:
@@ -258,8 +259,50 @@ function getTimeline(stimuli) {
         }
     }
 
-    let experimental_items = {
-       timeline : getSentenceTimeline(stimuli.table)
+    let stimuli_repeated = [];
+    for (let i = 0; i < global.NUM_REPETITIONS; i++) {
+        let stims = stimuli.table;
+        stims.forEach((stimulus) => {stimulus.repetition = i + 1;});
+
+        if (global.PSEUDO_RANDOMIZE) {
+            let shuffled = uil.randomization.randomizeStimuli(
+                stims,
+                global.MAX_SUCCEEDING_ITEMS_OF_TYPE
+            );
+            if (shuffled !== null)
+                stims = shuffled;
+            else
+                console.error('Unable to shuffle stimuli according constraints.')
+        }
+        stimuli_repeated = stimuli_repeated.concat(stims);
+    }
+
+    console.log(stimuli_repeated.slice(0, stimuli_repeated.length/2));
+    console.log(stimuli_repeated.slice(stimuli_repeated.length/2));
+
+    let experimental_items_pre_pause = {
+       timeline : getSentenceTimeline(
+           stimuli_repeated.slice(0, stimuli_repeated.length/2),
+           null
+       )
+    };
+
+    let pause = {
+        timeline : [
+            {
+                type: jsPsychHtmlKeyboardResponse,
+                stimulus: PAUSE_INSTRUCTION,
+                choices: [" "]
+            },
+            prepare_procedure
+        ]
+    };
+
+    let experimental_items_post_pause = {
+        timeline : getSentenceTimeline(
+            stimuli_repeated.slice(stimuli_repeated.length/2),
+            null
+        )
     };
 
     //////////////// timeline /////////////////////////////////
@@ -283,7 +326,9 @@ function getTimeline(stimuli) {
     timeline.push(practice_loop);
     timeline.push(end_practice_screen);
     timeline.push(prepare_procedure);
-    timeline.push(experimental_items);
+    timeline.push(experimental_items_pre_pause);
+    timeline.push(pause);
+    timeline.push(experimental_items_post_pause);
     timeline.push(end_experiment);
 
     return timeline
@@ -298,16 +343,6 @@ function kickOffExperiment(stimuli, timeline) {
     let test_items = stimuli.table;
     let list_name = stimuli.list_name;
 
-    if (global.PSEUDO_RANDOMIZE) {
-        let shuffled = uil.randomization.randomizeStimuli(
-            test_items,
-            global.MAX_SUCCEEDING_ITEMS_OF_TYPE
-        );
-        if (shuffled !== null)
-            test_items = shuffled;
-        else 
-            console.error('Unable to shuffle stimuli according constraints.')
-    }
 
     // data one would like to add to __all__ trials, according to:
     // https://www.jspsych.org/overview/data/

@@ -176,7 +176,7 @@ let survey_review = {
     response_ends_trial: true,
     on_finish: function(data) {
         // Repeat the survey if the participant finds the survey fields incorrect
-        repeat_survey = this.choices[data.response] !== CORRECT_BUTTON_TEXT;
+        repeat_survey = this.choices[data.response] !== global.CORRECT_BUTTON_TEXT;
     }
 };
 

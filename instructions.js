@@ -46,6 +46,12 @@ export const PRE_PRACTICE_INSTRUCTION1 =
 // Is setup in setupInstructions below.
 export let key_instruction = undefined;
 
+export let PAUSE_INSTRUCTION = `
+    Pauze instructies
+    
+    Druk op de spatiebalk om door te gaan.
+`;
+
 /**
  * Returns the instruction about the desired responsekey for a 
  * font color

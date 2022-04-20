@@ -35,7 +35,7 @@ export const USED_COLORS = [
 export let RESPONSE_KEYS = ["1", "2", "9", "0"];
 
 // The ISI will be added after each trial/stimulus
-export const ISI = 500; //ms
+export const ISI = 150; //ms
 
 // Fragments of text to display on buttons
 export const YES_BUTTON_TEST = "yes"
@@ -90,3 +90,8 @@ export const FEEDBACK_DURATION = 1000;
 // The percentage correct responses required in order to advance
 // from practice to test phase.
 export const REQ_PRAC_CORRECT = 75;
+
+// The table in stimuli.js should be repeated a number of times.
+// Since there are a number of repetition before and after a pause
+// it should be divisible by 2 without remainder.
+export const NUM_REPETITIONS = 2;
