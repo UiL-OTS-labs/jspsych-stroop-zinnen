@@ -1,3 +1,4 @@
+import * as global from "./globals.js";
 
 export const WELCOME_INSTRUCTION = `
 <h1>
@@ -56,9 +57,9 @@ export function colorResponseTable() {
     let instruction = "";
 
     function responseString(response_key) {
-        for (const color in correct_responses) {
-            if (correct_responses[color] === response_key) {
-                let tcolor = COL_TRANS[color];
+        for (const color in global.correct_responses) {
+            if (global.correct_responses[color] === response_key) {
+                let tcolor = global.COL_TRANS[color];
                 return `De toets <b>${response_key}</b> staat voor ${tcolor}`;
             }
         }
@@ -66,9 +67,9 @@ export function colorResponseTable() {
         return null;
     }
 
-    for (let i = 0; i < RESPONSE_KEYS.length; i++) {
-        instruction += responseString(RESPONSE_KEYS[i]);
-        if (i < RESPONSE_KEYS.length - 1) {
+    for (let i = 0; i < global.RESPONSE_KEYS.length; i++) {
+        instruction += responseString(global.RESPONSE_KEYS[i]);
+        if (i < global.RESPONSE_KEYS.length - 1) {
             instruction += ",";
             instruction += "<br>";
         }

@@ -5,6 +5,7 @@ import {
 } from "./stimuli.js";
 
 import {jsPsych} from "./init-jspsych.js";
+import * as global from "./globals.js";
 
 import {
     setupInstructions,
@@ -30,7 +31,7 @@ function setupResponseKeys() {
     let indices = [0, 1];
     let shuffled = jsPsych.randomization.shuffle(indices);
     let index = shuffled[0];
-    correct_responses = LIST_CORRECT_RESPONSES[index];
+    global.set_correct_responses(global.LIST_CORRECT_RESPONSES[index]);
 }
 
 /**
@@ -62,7 +63,7 @@ function getSentenceTimeline(testitems , prac_stats=null) {
         timeline.push(
             {
                 type : jsPsychHtmlKeyboardResponse,
-                choices : RESPONSE_KEYS,
+                choices : global.RESPONSE_KEYS,
                 trial_duration : null,
                 stimulus : target_stimulus,
                 on_finish : function (data) {
@@ -77,7 +78,7 @@ function getSentenceTimeline(testitems , prac_stats=null) {
         if (prac_stats) {
             let feedback = {
                 type : jsPsychHtmlKeyboardResponse,
-                trial_duration : FEEDBACK_DURATION,
+                trial_duration : global.FEEDBACK_DURATION,
                 stimulus : function () {
                     let last = jsPsych.data.getLastTrialData().values()[0];
                     let csscls = last.correct ? "correct" : "incorrect";
@@ -95,7 +96,7 @@ function getSentenceTimeline(testitems , prac_stats=null) {
 
 function main() {
     // Make sure you have updated your key in globals.js
-    uil.setAccessKey(ACCESS_KEY);
+    uil.setAccessKey(global.ACCESS_KEY);
     uil.stopIfExperimentClosed();
 
     createTrialTimelines();
@@ -125,35 +126,35 @@ function getTimeline(stimuli) {
     let welcome_screen = {
         type : jsPsychHtmlKeyboardResponse,
         stimulus : WELCOME_INSTRUCTION,
-        choices : [CONTINUE_KEY],
+        choices : [global.CONTINUE_KEY],
         response_ends_trial : true
     };
 
     let instruction_screen_practice1 = {
         type : jsPsychHtmlKeyboardResponse,
         stimulus : PRE_PRACTICE_INSTRUCTION1,
-        choices : [CONTINUE_KEY],
+        choices : [global.CONTINUE_KEY],
         response_ends_trial : true
     };
 
     let instruction_screen_practice2 = {
         type : jsPsychHtmlKeyboardResponse,
         stimulus : key_instruction,
-        choices : [CONTINUE_KEY],
+        choices : [global.CONTINUE_KEY],
         response_ends_trial : true
     };
 
     let instruction_screen_practice3 = {
         type : jsPsychHtmlKeyboardResponse,
         stimulus : PRE_PRACTICE_INSTRUCTION3,
-        choices : [CONTINUE_KEY],
+        choices : [global.CONTINUE_KEY],
         response_ends_trial : true
     };    
 
     let end_practice_screen = {
         type : jsPsychHtmlKeyboardResponse,
         stimulus : PRE_TEST_INSTRUCTION,
-        choices : [CONTINUE_KEY],
+        choices : [global.CONTINUE_KEY],
         response_ends_trial : true
     };
 
@@ -161,7 +162,7 @@ function getTimeline(stimuli) {
         type : jsPsychHtmlKeyboardResponse,
         stimulus : POST_TEST_INSTRUCTION,
         choices : [],
-        trial_duration : FINISH_TEXT_DUR,
+        trial_duration : global.FINISH_TEXT_DUR,
         on_load : function () {
             if (consent_given) {
                 let json = jsPsych.data.get().json();
@@ -173,7 +174,7 @@ function getTimeline(stimuli) {
         }
     };
 
-    let pstats = new PracticeStats(REQ_PRAC_CORRECT);
+    let pstats = new PracticeStats(global.REQ_PRAC_CORRECT);
 
     let prepare_procedure = { // count down with a blank screen in the last iteration
         timeline : [
@@ -201,7 +202,7 @@ function getTimeline(stimuli) {
 
     let practice_results = {
         type : jsPsychHtmlKeyboardResponse,
-        choices : [CONTINUE_KEY],
+        choices : [global.CONTINUE_KEY],
         stimulus : function () {
             let html;
             if (pstats.practicePassed())
@@ -217,7 +218,7 @@ function getTimeline(stimuli) {
 
     let key_reminder = {
         type : jsPsychHtmlKeyboardResponse,
-        choices : [CONTINUE_KEY],
+        choices : [global.CONTINUE_KEY],
         stimulus : function () {
             let html = "<h>Ter herinnering:</h>";
             html += "<p>";
@@ -297,10 +298,10 @@ function kickOffExperiment(stimuli, timeline) {
     let test_items = stimuli.table;
     let list_name = stimuli.list_name;
 
-    if (PSEUDO_RANDOMIZE) {
+    if (global.PSEUDO_RANDOMIZE) {
         let shuffled = uil.randomization.randomizeStimuli(
             test_items,
-            MAX_SUCCEEDING_ITEMS_OF_TYPE
+            global.MAX_SUCCEEDING_ITEMS_OF_TYPE
         );
         if (shuffled !== null)
             test_items = shuffled;
