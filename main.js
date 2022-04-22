@@ -67,6 +67,10 @@ function getSentenceTimeline(testitems , prac_stats=null) {
                 choices : global.RESPONSE_KEYS,
                 trial_duration : null,
                 stimulus : target_stimulus,
+                data : {
+                    repetition : item.repetition,
+                    id : item.id,
+                },
                 on_finish : function (data) {
                     data.correct =
                         global.correct_responses[target.color] === data.response;
@@ -261,8 +265,22 @@ function getTimeline(stimuli) {
 
     let stimuli_repeated = [];
     for (let i = 0; i < global.NUM_REPETITIONS; i++) {
-        let stims = stimuli.table;
-        stims.forEach((stimulus) => {stimulus.repetition = i + 1;});
+        let stims = [];
+        stimuli.table.forEach((stimulus) => {
+            let clone;
+            try {
+                clone = structuredClone(stimulus);
+            } catch (error)  {
+                if (error instanceof ReferenceError) { // Old skool cloning.
+                    clone = JSON.parse(JSON.stringify(stimulus));
+                }
+                else {
+                    throw error;
+                }
+            }
+            clone.repetition = i + 1;
+            stims.push(clone);
+        });
 
         if (global.PSEUDO_RANDOMIZE) {
             let shuffled = uil.randomization.randomizeStimuli(
@@ -276,9 +294,6 @@ function getTimeline(stimuli) {
         }
         stimuli_repeated = stimuli_repeated.concat(stims);
     }
-
-    console.log(stimuli_repeated.slice(0, stimuli_repeated.length/2));
-    console.log(stimuli_repeated.slice(stimuli_repeated.length/2));
 
     let experimental_items_pre_pause = {
        timeline : getSentenceTimeline(
