@@ -60,7 +60,7 @@ function getSentenceTimeline(testitems , prac_stats=null) {
         });
 
         let target_stimulus =
-            `<p class="word ${target.color}">${target.word}</p>`;
+            `<p class="target ${target.color}">${target.word}</p>`;
         timeline.push(
             {
                 type : jsPsychHtmlKeyboardResponse,

@@ -9,6 +9,11 @@ body {
 
 p.word {
     font-family: DejavuSansMono;
+    font-size: 40px;
+    font-weight: bold;
+}
+p.target {
+    font-family: DejavuSansMono;
     font-size: 50px;
     font-weight: bold;
 }
