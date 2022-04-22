@@ -23,7 +23,7 @@ export const MIN_WIDTH = 1000;
 export const MIN_HEIGHT = 600;
 
 // The default color (for words that don't require a response)
-export const DEFAULT_COLOR = "black";
+export const DEFAULT_COLOR = "white";
 
 export const USED_COLORS = [
     "rood",
