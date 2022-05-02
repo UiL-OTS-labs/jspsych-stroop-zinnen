@@ -95,3 +95,6 @@ export const REQ_PRAC_CORRECT = 75;
 // Since there are a number of repetition before and after a pause
 // it should be divisible by 2 without remainder.
 export const NUM_REPETITIONS = 2;
+
+// Whether to run the rosenberg survey.
+export const RUN_ROSENBERG = true;

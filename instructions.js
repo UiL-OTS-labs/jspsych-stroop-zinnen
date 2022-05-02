@@ -23,25 +23,25 @@ export const WELCOME_INSTRUCTION = `
     Druk op de spatiebalk om door te gaan.
 </p>`;
 
-export const PRE_PRACTICE_INSTRUCTION1 =
-    "<h1>"                                                              +
-        "Vervolg instructies."                                          +
-    "</h1>"                                                             +
-    "<p>"                                                               +
-        "Je krijgt zo meteen een reeks woorden te zien "                +
-        "op het computerscherm. Deze woorden kunnen in het "            +
-        "rood, geel, groen of blauw op het scherm verschijnen. "        +
-        "Als je een woord ziet, gaat het erom dat je zo "               +
-        "snel mogelijk de kleur van het woord benoemt via "             +
-        "een druk op een toets. Het gaat in dit experiment "            +
-        "dus niet om de betekenis van het woord, maar slechts "         +
-        "om de kleur. Telkens als je de kleur hebt benoemd, "           +
-        "krijg je het volgende woord te zien. "                         +
-    "</p>"                                                              +
-    "<p>"                                                               +
-        "Klik op de spatiebalk om door "                                +
-        "te gaan naar de volgende pagina."                              +
-    "</p>";
+export const PRE_PRACTICE_INSTRUCTION1 = `
+<h1>
+    Vervolg instructies.
+</h1>
+<p>
+    Je krijgt zo meteen een reeks woorden te zien
+    op het computerscherm. Deze woorden kunnen in het
+    rood, geel, groen of blauw op het scherm verschijnen.
+    Als je een woord ziet, gaat het erom dat je zo
+    snel mogelijk de kleur van het woord benoemt via
+    een druk op een toets. Het gaat in dit experiment
+    dus niet om de betekenis van het woord, maar slechts
+    om de kleur. Telkens als je de kleur hebt benoemd,
+    krijg je het volgende woord te zien.
+</p>
+<p>
+    Klik op de spatiebalk om door
+    te gaan naar de volgende pagina.
+</p>`;
 
 // Is setup in setupInstructions below.
 export let key_instruction = undefined;
@@ -107,23 +107,23 @@ export function setupInstructions()
     key_instruction = instruction;
 }
 
-export const PRE_PRACTICE_INSTRUCTION3 =
-    "<p>"                                                               +
-        "Je gebruikt je wijs- en middelvinger "                         +
-        "van beide handen om de toetsen in te drukken. "                +
-        "Het is de bedoeling dat je deze vingers "                      +
-        "gedurende het hele experiment op "                             +
-        "de toetsen houdt. "                                            +
-        "Natuurlijk kun je tussendoor wel "                             +
-        "even verzitten en bewegen. "                                   +
-    "</p>"                                                              +
-    "<p>"                                                               +
-        "Geef je antwoord zo snel mogelijk, maar het "                  +
-        "is ook belangrijk om het juiste antwoord te geven."            +
-    "</p>"                                                              +
-    "<p>"                                                               +
-        "Druk op de spatie balk om verder te gaan."                     +
-    "</p>";
+export const PRE_PRACTICE_INSTRUCTION3 = `
+<p>
+    Je gebruikt je wijs- en middelvinger
+    van beide handen om de toetsen in te drukken.                 
+    Het is de bedoeling dat je deze vingers
+    gedurende het hele experiment op
+    de toetsen houdt.
+    Natuurlijk kun je tussendoor wel
+    even verzitten en bewegen.
+</p>
+<p>
+    Geef je antwoord zo snel mogelijk, maar het
+    is ook belangrijk om het juiste antwoord te geven.
+</p>
+<p>
+    Druk op de spatiebalk om verder te gaan.
+</p>`;
 
 export const PRE_TEST_INSTRUCTION =
     "<p>"                                                               +

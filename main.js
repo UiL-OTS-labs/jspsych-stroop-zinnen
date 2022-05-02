@@ -24,6 +24,7 @@ import {
 import PracticeStats from "./practice-stats.js";
 import {consent_procedure, consent_given} from "./consent.js";
 import {survey_procedure} from "./survey.js";
+import {rosenberg_procedure} from "./rosenberg.js";
 
 export {main};
 
@@ -326,6 +327,7 @@ function getTimeline(stimuli) {
     // Welcome the participant and guide them through the 
     // consent forms and survey.
     timeline.push(welcome_screen);
+    timeline.push(rosenberg_procedure)
 
     // Obtain informed consent.
     timeline.push(consent_procedure);
