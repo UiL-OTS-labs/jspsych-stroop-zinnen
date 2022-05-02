@@ -46,6 +46,10 @@ function getSentenceTimeline(testitems , prac_stats=null) {
     testitems.forEach((item) => {
         let words = item.sentence_timeline.slice(0, -1);
         let target = item.sentence_timeline.slice(-1)[0];
+        const TRIAL_PART = "trial_part";
+        const WORD = "word";
+        const ISI = "isi";
+        const TARGET = "target";
 
         words.forEach((word) => {
             let color = word.color;
@@ -54,9 +58,19 @@ function getSentenceTimeline(testitems , prac_stats=null) {
                 type : jsPsychHtmlKeyboardResponse,
                 trial_duration : word.trial_duration,
                 choices : [],
-                stimulus : stimulus
+                stimulus : stimulus,
+                on_finish : data => data.trial_part = WORD
             };
             timeline.push(present_word);
+            timeline.push( // ISI
+                {
+                    type : jsPsychHtmlKeyboardResponse,
+                    trial_duration : global.ISI_DUR,
+                    choices : [],
+                    stimulus : "",
+                    on_finish : data => data.trial_part = ISI
+                }
+            );
         });
 
         let target_stimulus =
@@ -72,6 +86,7 @@ function getSentenceTimeline(testitems , prac_stats=null) {
                     id : item.id,
                 },
                 on_finish : function (data) {
+                    data.trial_part = TARGET;
                     data.correct =
                         global.correct_responses[target.color] === data.response;
                     if (prac_stats) {

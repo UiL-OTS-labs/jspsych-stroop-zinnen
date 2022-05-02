@@ -35,7 +35,7 @@ export const USED_COLORS = [
 export let RESPONSE_KEYS = ["1", "2", "9", "0"];
 
 // The ISI will be added after each trial/stimulus
-export const ISI = 150; //ms
+export const ISI_DUR = 150; //ms
 
 // Fragments of text to display on buttons
 export const YES_BUTTON_TEST = "yes"
