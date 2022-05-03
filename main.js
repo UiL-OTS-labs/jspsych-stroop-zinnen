@@ -1,10 +1,11 @@
 import {
     getPracticeItems,
-    pickRandomList,
+    getTestItems,
     createTrialTimelines
 } from "./stimuli.js";
 
 import {jsPsych} from "./init-jspsych.js";
+import * as global from "./globals.js";
 
 import {
     setupInstructions,
@@ -16,21 +17,25 @@ import {
     PRE_TEST_INSTRUCTION,
     POST_TEST_INSTRUCTION,
     PREPARE_INSTRUCTION,
-    FINISHED_NO_CONSENT
+    FINISHED_NO_CONSENT,
+    PAUSE_INSTRUCTION, PRE_EXPERIMENT_EXPRIMENTAL_1, PRE_EXPERIMENT_EXPRIMENTAL_2, PAUSE_EXPRIMENTAL_2
 } from "./instructions.js";
 
 import PracticeStats from "./practice-stats.js";
 import {consent_procedure, consent_given} from "./consent.js";
 import {survey_procedure} from "./survey.js";
+import {if_rosenberg} from "./rosenberg.js";
+import {INSTRUCTION_GROUPS} from "./globals.js";
 
 export {main};
 
+export let chosen_group = undefined;
 
 function setupResponseKeys() {
     let indices = [0, 1];
     let shuffled = jsPsych.randomization.shuffle(indices);
     let index = shuffled[0];
-    correct_responses = LIST_CORRECT_RESPONSES[index];
+    global.set_correct_responses(global.LIST_CORRECT_RESPONSES[index]);
 }
 
 /**
@@ -44,6 +49,10 @@ function getSentenceTimeline(testitems , prac_stats=null) {
     testitems.forEach((item) => {
         let words = item.sentence_timeline.slice(0, -1);
         let target = item.sentence_timeline.slice(-1)[0];
+        const TRIAL_PART = "trial_part";
+        const WORD = "word";
+        const ISI = "isi";
+        const TARGET = "target";
 
         words.forEach((word) => {
             let color = word.color;
@@ -52,22 +61,37 @@ function getSentenceTimeline(testitems , prac_stats=null) {
                 type : jsPsychHtmlKeyboardResponse,
                 trial_duration : word.trial_duration,
                 choices : [],
-                stimulus : stimulus
+                stimulus : stimulus,
+                on_finish : data => data.trial_part = WORD
             };
             timeline.push(present_word);
+            timeline.push( // ISI
+                {
+                    type : jsPsychHtmlKeyboardResponse,
+                    trial_duration : global.ISI_DUR,
+                    choices : [],
+                    stimulus : "",
+                    on_finish : data => data.trial_part = ISI
+                }
+            );
         });
 
         let target_stimulus =
-            `<p class="word ${target.color}">${target.word}</p>`;
+            `<p class="target ${target.color}">${target.word}</p>`;
         timeline.push(
             {
                 type : jsPsychHtmlKeyboardResponse,
-                choices : RESPONSE_KEYS,
+                choices : global.RESPONSE_KEYS,
                 trial_duration : null,
                 stimulus : target_stimulus,
+                data : {
+                    repetition : item.repetition,
+                    id : item.id,
+                },
                 on_finish : function (data) {
+                    data.trial_part = TARGET;
                     data.correct =
-                        correct_responses[target.color] === data.response;
+                        global.correct_responses[target.color] === data.response;
                     if (prac_stats) {
                         prac_stats.appendResult(data.correct);
                     }
@@ -77,12 +101,12 @@ function getSentenceTimeline(testitems , prac_stats=null) {
         if (prac_stats) {
             let feedback = {
                 type : jsPsychHtmlKeyboardResponse,
-                trial_duration : FEEDBACK_DURATION,
+                trial_duration : global.FEEDBACK_DURATION,
                 stimulus : function () {
                     let last = jsPsych.data.getLastTrialData().values()[0];
                     let csscls = last.correct ? "correct" : "incorrect";
                     let feedback = last.correct ?
-                        CORRECT_BUTTON_TEXT : INCORRECT_BUTTON_TEXT;
+                        global.CORRECT_BUTTON_TEXT : global.INCORRECT_BUTTON_TEXT;
                     return `<p class="feedback ${csscls}">${feedback}</p>`;
                 }
             }
@@ -92,16 +116,20 @@ function getSentenceTimeline(testitems , prac_stats=null) {
     return timeline;
 }
 
-
 function main() {
     // Make sure you have updated your key in globals.js
-    uil.setAccessKey(ACCESS_KEY);
+    uil.setAccessKey(global.ACCESS_KEY);
     uil.stopIfExperimentClosed();
 
     createTrialTimelines();
 
     // Option 1: client side randomization:
-    let stimuli = pickRandomList();
+    let stimuli = getTestItems();
+    let groups = [...global.GROUPS];
+    groups = uil.randomization.randomShuffle(groups);
+    chosen_group = groups[0];
+    console.assert(global.GROUPS.includes(chosen_group));
+
     kickOffExperiment(stimuli, getTimeline(stimuli));
 
     // Option 2: server side balancing:
@@ -112,7 +140,9 @@ function main() {
     // Hence, unless you change lists here, you should have created matching
     // groups there.
     // uil.session.start(ACCESS_KEY, (group_name) => {
-    //     let stimuli = findList(group_name);
+    //     let stimuli = getTestItems();
+    //     chosen_group = group_name;
+    //     console.assert(global.GROUPS.includes(chosen_group));
     //     kickOffExperiment(stimuli, getTimeline(stimuli));
     // });
 }
@@ -125,43 +155,81 @@ function getTimeline(stimuli) {
     let welcome_screen = {
         type : jsPsychHtmlKeyboardResponse,
         stimulus : WELCOME_INSTRUCTION,
-        choices : [CONTINUE_KEY],
+        choices : [global.CONTINUE_KEY],
         response_ends_trial : true
     };
 
     let instruction_screen_practice1 = {
         type : jsPsychHtmlKeyboardResponse,
         stimulus : PRE_PRACTICE_INSTRUCTION1,
-        choices : [CONTINUE_KEY],
+        choices : [global.CONTINUE_KEY],
         response_ends_trial : true
     };
 
     let instruction_screen_practice2 = {
         type : jsPsychHtmlKeyboardResponse,
         stimulus : key_instruction,
-        choices : [CONTINUE_KEY],
+        choices : [global.CONTINUE_KEY],
         response_ends_trial : true
     };
 
     let instruction_screen_practice3 = {
         type : jsPsychHtmlKeyboardResponse,
         stimulus : PRE_PRACTICE_INSTRUCTION3,
-        choices : [CONTINUE_KEY],
+        choices : [global.CONTINUE_KEY],
         response_ends_trial : true
     };    
 
     let end_practice_screen = {
         type : jsPsychHtmlKeyboardResponse,
         stimulus : PRE_TEST_INSTRUCTION,
-        choices : [CONTINUE_KEY],
+        choices : [global.CONTINUE_KEY],
         response_ends_trial : true
     };
+
+    let experimental_instruction = {
+        type : jsPsychHtmlKeyboardResponse,
+        choices : [' '],
+        stimulus : function() {
+            console.assert(global.INSTRUCTION_GROUPS.includes(chosen_group));
+            if (chosen_group === INSTRUCTION_GROUPS[0])
+                return PRE_EXPERIMENT_EXPRIMENTAL_1;
+            else
+                return PRE_EXPERIMENT_EXPRIMENTAL_2;
+        }
+    }
+
+    let if_experimental_instruction = {
+        timeline : [experimental_instruction],
+        conditional_function : function () {
+            return global.INSTRUCTION_GROUPS.includes(chosen_group);
+        }
+    }
+
+    let experimental_pause_instruction = {
+        type : jsPsychHtmlKeyboardResponse,
+        choices : [' '],
+        stimulus : function() {
+            console.assert(global.INSTRUCTION_GROUPS.includes(chosen_group));
+            if (chosen_group === INSTRUCTION_GROUPS[0])
+                return PAUSE_EXPRIMENTAL_1;
+            else
+                return PAUSE_EXPRIMENTAL_2;
+        }
+    }
+
+    let if_experimental_pause_instruction = {
+        timeline : [experimental_pause_instruction],
+        conditional_function : function () {
+            return global.INSTRUCTION_GROUPS.includes(chosen_group);
+        }
+    }
 
     let end_experiment = {
         type : jsPsychHtmlKeyboardResponse,
         stimulus : POST_TEST_INSTRUCTION,
         choices : [],
-        trial_duration : FINISH_TEXT_DUR,
+        trial_duration : global.FINISH_TEXT_DUR,
         on_load : function () {
             if (consent_given) {
                 let json = jsPsych.data.get().json();
@@ -173,7 +241,7 @@ function getTimeline(stimuli) {
         }
     };
 
-    let pstats = new PracticeStats(REQ_PRAC_CORRECT);
+    let pstats = new PracticeStats(global.REQ_PRAC_CORRECT);
 
     let prepare_procedure = { // count down with a blank screen in the last iteration
         timeline : [
@@ -201,7 +269,7 @@ function getTimeline(stimuli) {
 
     let practice_results = {
         type : jsPsychHtmlKeyboardResponse,
-        choices : [CONTINUE_KEY],
+        choices : [global.CONTINUE_KEY],
         stimulus : function () {
             let html;
             if (pstats.practicePassed())
@@ -217,7 +285,7 @@ function getTimeline(stimuli) {
 
     let key_reminder = {
         type : jsPsychHtmlKeyboardResponse,
-        choices : [CONTINUE_KEY],
+        choices : [global.CONTINUE_KEY],
         stimulus : function () {
             let html = "<h>Ter herinnering:</h>";
             html += "<p>";
@@ -257,8 +325,62 @@ function getTimeline(stimuli) {
         }
     }
 
-    let experimental_items = {
-       timeline : getSentenceTimeline(stimuli.table)
+    let stimuli_repeated = [];
+    for (let i = 0; i < global.NUM_REPETITIONS; i++) {
+        let stims = [];
+        stimuli.table.forEach((stimulus) => {
+            let clone;
+            try {
+                clone = structuredClone(stimulus);
+            } catch (error)  {
+                if (error instanceof ReferenceError) { // Old skool cloning.
+                    clone = JSON.parse(JSON.stringify(stimulus));
+                }
+                else {
+                    throw error;
+                }
+            }
+            clone.repetition = i + 1;
+            stims.push(clone);
+        });
+
+        if (global.PSEUDO_RANDOMIZE) {
+            let shuffled = uil.randomization.randomizeStimuli(
+                stims,
+                global.MAX_SUCCEEDING_ITEMS_OF_TYPE
+            );
+            if (shuffled !== null)
+                stims = shuffled;
+            else
+                console.error('Unable to shuffle stimuli according constraints.')
+        }
+        stimuli_repeated = stimuli_repeated.concat(stims);
+    }
+
+    let experimental_items_pre_pause = {
+       timeline : getSentenceTimeline(
+           stimuli_repeated.slice(0, stimuli_repeated.length/2),
+           null
+       )
+    };
+
+    let pause = {
+        timeline : [
+            {
+                type: jsPsychHtmlKeyboardResponse,
+                stimulus: PAUSE_INSTRUCTION,
+                choices: [" "]
+            },
+            if_experimental_pause_instruction,
+            prepare_procedure
+        ]
+    };
+
+    let experimental_items_post_pause = {
+        timeline : getSentenceTimeline(
+            stimuli_repeated.slice(stimuli_repeated.length/2),
+            null
+        )
     };
 
     //////////////// timeline /////////////////////////////////
@@ -281,8 +403,13 @@ function getTimeline(stimuli) {
 
     timeline.push(practice_loop);
     timeline.push(end_practice_screen);
+    timeline.push(if_experimental_instruction);
     timeline.push(prepare_procedure);
-    timeline.push(experimental_items);
+    timeline.push(experimental_items_pre_pause);
+    timeline.push(pause);
+    timeline.push(experimental_items_post_pause);
+
+    timeline.push(if_rosenberg)
     timeline.push(end_experiment);
 
     return timeline
@@ -297,23 +424,13 @@ function kickOffExperiment(stimuli, timeline) {
     let test_items = stimuli.table;
     let list_name = stimuli.list_name;
 
-    if (PSEUDO_RANDOMIZE) {
-        let shuffled = uil.randomization.randomizeStimuli(
-            test_items,
-            MAX_SUCCEEDING_ITEMS_OF_TYPE
-        );
-        if (shuffled !== null)
-            test_items = shuffled;
-        else 
-            console.error('Unable to shuffle stimuli according constraints.')
-    }
 
     // data one would like to add to __all__ trials, according to:
     // https://www.jspsych.org/overview/data/
     jsPsych.data.addProperties (
         {
             subject : subject_id,
-            list : list_name,
+            chosen_group : chosen_group
         }
     );
     

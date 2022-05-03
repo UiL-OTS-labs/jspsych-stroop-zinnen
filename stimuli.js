@@ -1,4 +1,5 @@
 import {jsPsych} from "./init-jspsych.js";
+import * as global from "./globals.js";
 
 // Item types
 const PRACTICE      = "PRACTICE";
@@ -23,8 +24,7 @@ const BLUE = "blue";
 // also add this list to the TEST_ITEMS array below.
 const LISTS = [
     "list1",
-    "list2"
-    // "list3"
+    // "list2"
 ];
 
 const PRACTICE_ITEMS = [
@@ -114,64 +114,9 @@ const LIST_GROUP1 = [
     }
 ];
 
-/*
- * In this list there is a stimulus, if a word starts with a '#' its
- * reaction time will be recorded. So don't put any '#" elsewhere...
- */
-const LIST_GROUP2 = [
-    {
-        id : 1,
-        item_type : INCONGRUENT,
-        sentence : "De fiets is rood",
-        color : BLUE, 
-    },
-    {
-        id : 2,
-        item_type : CONGRUENT,
-        sentence : "De lucht is rood",
-        color : RED 
-    },
-    {
-        id : 3,
-        item_type : INCONGRUENT,
-        sentence : "Het gras is groen",
-        color : RED,
-    },
-    {
-        id : 4,
-        item_type : CONGRUENT,
-        sentence : "rood is niet geel",
-        color : YELLOW
-    },
-    {
-        id : 5,
-        item_type : NEUTRAL,
-        sentence : "Hij eet met een vork",
-        color : YELLOW
-    },
-    {
-        id : 6,
-        item_type : EMOTIONAL,
-        sentence : "Zij laat een traan",
-        color : RED
-    }
-];
 
-// Add a third list of stimuli when required.
-// const LIST_GROUP3 = [
-// ...
-// ]
-
-// This list can be use as a between subject variable
-// e.g. GROUP1 gets a manipulation not present in
-// GROUP2, these groups may also be used to create
-// a latin square design
 const TEST_ITEMS = [
     {list_name: LISTS[0], table: LIST_GROUP1},
-    {list_name: LISTS[1], table: LIST_GROUP2}
-    // Add a third list here, put a comma on the
-    // end of the line above here.
-    // {list_name: LISTS[1], table: LIST_GROUP3}
 ];
 
 /**
@@ -187,25 +132,10 @@ export function getPracticeItems() {
 }
 
 /**
- * This function will pick a random list from the TEST_ITEMS array.
- *
- * Returns an object with a list and a table, the list will always indicate
- * which list has been chosen for the participant.
- *
- * @returns {object} object with list_name and table fields
+ * Get test items
  */
-export function pickRandomList() {
-    let range = function (n) {
-        let empty_array = [];
-        let i;
-        for (i = 0; i < n; i++) {
-            empty_array.push(i);
-        }
-        return empty_array;
-    }
-    let num_lists = TEST_ITEMS.length;
-    let shuffled_range = jsPsych.randomization.repeat(range(num_lists), 1);
-    return TEST_ITEMS[shuffled_range[0]];
+export function getTestItems() {
+    return TEST_ITEMS[0];
 }
 
 /**
@@ -233,7 +163,7 @@ export function createTrialTimelines() {
             timeline.push(
                 {
                     word : word,
-                    color : DEFAULT_COLOR,
+                    color : global.DEFAULT_COLOR,
                     trial_duration : stimulusDuration(word),
                     choices : [],
                 }
@@ -244,7 +174,7 @@ export function createTrialTimelines() {
                 word : final[0],
                 color : stimulus.color,
                 trial_duration : null, // Test stimulus, response required.
-                choices : RESPONSE_KEYS
+                choices : global.RESPONSE_KEYS
             }
         );
         return timeline;

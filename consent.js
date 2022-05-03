@@ -1,4 +1,5 @@
 import {jsPsych} from "./init-jspsych.js";
+import * as global from "./globals.js";
 
 // Keeps track whether or not consent has been given.
 export let consent_given = false;
@@ -37,7 +38,7 @@ const IF_REQUIRED_FEEDBACK_MESSAGE =
     "in order to proceed to the experiment.";
 
 // Adds UU styling to the consent forms.
-const CONSENT_HTML_STYLE_UU = `<style>
+let CONSENT_HTML_STYLE_UU = `<style>
         body {
             background: rgb(246, 246, 246);
             font-family: "Open Sans","Frutiger",Helvetica,Arial,sans-serif;
@@ -160,6 +161,8 @@ const CONSENT_HTML_STYLE_UU = `<style>
         </style>
         `;
 
+CONSENT_HTML_STYLE_UU = "";
+
 // displays the informed consent page
 let consent_block = {
     type: jsPsychSurveyMultiSelect,
@@ -172,7 +175,7 @@ let consent_block = {
             options: [CONSENT_STATEMENT], 
             horizontal: true,
             required: false,  
-            button_label: CONTINUE_BUTTON_TEXT,
+            button_label: global.CONTINUE_BUTTON_TEXT,
             name: CONSENT_REFERENCE_NAME
         }
     ],
@@ -188,7 +191,7 @@ let no_consent_end_screen = {
     type: jsPsychHtmlButtonResponse,
     stimulus: DEBRIEF_MESSAGE_NO_CONSENT,
     choices: [],
-    trial_duration: FINISH_TEXT_DUR,
+    trial_duration: global.FINISH_TEXT_DUR,
     on_finish: function (data){
         jsPsych.endExperiment()
     }
