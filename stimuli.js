@@ -136,7 +136,6 @@ export function getPracticeItems() {
  */
 export function getTestItems() {
     return TEST_ITEMS[0];
-
 }
 
 /**

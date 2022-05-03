@@ -18,16 +18,18 @@ import {
     POST_TEST_INSTRUCTION,
     PREPARE_INSTRUCTION,
     FINISHED_NO_CONSENT,
-    PAUSE_INSTRUCTION
+    PAUSE_INSTRUCTION, PRE_EXPERIMENT_EXPRIMENTAL_1, PRE_EXPERIMENT_EXPRIMENTAL_2, PAUSE_EXPRIMENTAL_2
 } from "./instructions.js";
 
 import PracticeStats from "./practice-stats.js";
 import {consent_procedure, consent_given} from "./consent.js";
 import {survey_procedure} from "./survey.js";
-import {rosenberg_procedure} from "./rosenberg.js";
+import {if_rosenberg} from "./rosenberg.js";
+import {INSTRUCTION_GROUPS} from "./globals.js";
 
 export {main};
 
+export let chosen_group = undefined;
 
 function setupResponseKeys() {
     let indices = [0, 1];
@@ -114,7 +116,6 @@ function getSentenceTimeline(testitems , prac_stats=null) {
     return timeline;
 }
 
-
 function main() {
     // Make sure you have updated your key in globals.js
     uil.setAccessKey(global.ACCESS_KEY);
@@ -124,6 +125,11 @@ function main() {
 
     // Option 1: client side randomization:
     let stimuli = getTestItems();
+    let groups = [...global.GROUPS];
+    groups = uil.randomization.randomShuffle(groups);
+    chosen_group = groups[0];
+    console.assert(global.GROUPS.includes(chosen_group));
+
     kickOffExperiment(stimuli, getTimeline(stimuli));
 
     // Option 2: server side balancing:
@@ -134,7 +140,9 @@ function main() {
     // Hence, unless you change lists here, you should have created matching
     // groups there.
     // uil.session.start(ACCESS_KEY, (group_name) => {
-    //     let stimuli = findList(group_name);
+    //     let stimuli = getTestItems();
+    //     chosen_group = group_name;
+    //     console.assert(global.GROUPS.includes(chosen_group));
     //     kickOffExperiment(stimuli, getTimeline(stimuli));
     // });
 }
@@ -178,6 +186,44 @@ function getTimeline(stimuli) {
         choices : [global.CONTINUE_KEY],
         response_ends_trial : true
     };
+
+    let experimental_instruction = {
+        type : jsPsychHtmlKeyboardResponse,
+        choices : [' '],
+        stimulus : function() {
+            console.assert(global.INSTRUCTION_GROUPS.includes(chosen_group));
+            if (chosen_group === INSTRUCTION_GROUPS[0])
+                return PRE_EXPERIMENT_EXPRIMENTAL_1;
+            else
+                return PRE_EXPERIMENT_EXPRIMENTAL_2;
+        }
+    }
+
+    let if_experimental_instruction = {
+        timeline : [experimental_instruction],
+        conditional_function : function () {
+            return global.INSTRUCTION_GROUPS.includes(chosen_group);
+        }
+    }
+
+    let experimental_pause_instruction = {
+        type : jsPsychHtmlKeyboardResponse,
+        choices : [' '],
+        stimulus : function() {
+            console.assert(global.INSTRUCTION_GROUPS.includes(chosen_group));
+            if (chosen_group === INSTRUCTION_GROUPS[0])
+                return PAUSE_EXPRIMENTAL_1;
+            else
+                return PAUSE_EXPRIMENTAL_2;
+        }
+    }
+
+    let if_experimental_pause_instruction = {
+        timeline : [experimental_pause_instruction],
+        conditional_function : function () {
+            return global.INSTRUCTION_GROUPS.includes(chosen_group);
+        }
+    }
 
     let end_experiment = {
         type : jsPsychHtmlKeyboardResponse,
@@ -325,6 +371,7 @@ function getTimeline(stimuli) {
                 stimulus: PAUSE_INSTRUCTION,
                 choices: [" "]
             },
+            if_experimental_pause_instruction,
             prepare_procedure
         ]
     };
@@ -356,12 +403,13 @@ function getTimeline(stimuli) {
 
     timeline.push(practice_loop);
     timeline.push(end_practice_screen);
+    timeline.push(if_experimental_instruction);
     timeline.push(prepare_procedure);
     timeline.push(experimental_items_pre_pause);
     timeline.push(pause);
     timeline.push(experimental_items_post_pause);
 
-    timeline.push(rosenberg_procedure)
+    timeline.push(if_rosenberg)
     timeline.push(end_experiment);
 
     return timeline
@@ -382,7 +430,7 @@ function kickOffExperiment(stimuli, timeline) {
     jsPsych.data.addProperties (
         {
             subject : subject_id,
-            list : list_name,
+            chosen_group : chosen_group
         }
     );
     

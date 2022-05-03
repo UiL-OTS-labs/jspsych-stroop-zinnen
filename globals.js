@@ -98,3 +98,23 @@ export const NUM_REPETITIONS = 2;
 
 // Whether to run the rosenberg survey.
 export const RUN_ROSENBERG = true;
+
+// The allowed groups in this experiment. Can be replaced by other names,
+// note that this should happen in unison with the defined groups on the
+// data server.
+export const GROUPS = [
+    "group1", // Instructions with 1
+    "group2", // Instructions with 2,
+    "group3", // Instructions with 3_4 + Rosenberg questionnaire
+    "group4"  // Instructions with 3_4 + Rosenberg questionnaire
+];
+
+export const INSTRUCTION_GROUPS = [
+    GROUPS[0],
+    GROUPS[1]
+];
+
+export const ROSENBERG_GROUPS = [
+    GROUPS[2],
+    GROUPS[3],
+]

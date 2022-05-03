@@ -1,5 +1,6 @@
 import {jsPsych} from "./init-jspsych.js";
 import * as global from "./globals.js";
+import {chosen_group} from "./main.js";
 
 const PREAMBLE = "Kies één van de antwoorden onder de vragen hieronder.";
 
@@ -135,12 +136,12 @@ const survey_rosenberg = {
     }
 };
 
-export let rosenberg_procedure = {
+export let if_rosenberg= {
     timeline : [
-        survey_rosenberg,
+        survey_rosenberg
     ],
     conditional_function : function () {
-        return global.RUN_ROSENBERG;
+        return global.ROSENBERG_GROUPS.includes(chosen_group);
     }
 };
 

@@ -46,10 +46,22 @@ export const PRE_PRACTICE_INSTRUCTION1 = `
 // Is setup in setupInstructions below.
 export let key_instruction = undefined;
 
+export let PRE_EXPERIMENT_EXPRIMENTAL_1 =
+    `<h1>experimental instructions group 1</h1>`;
+
+export let PRE_EXPERIMENT_EXPRIMENTAL_2 =
+    `<h1>experimental instructions group 2</h1>`;
+
+export let PAUSE_EXPRIMENTAL_1 =
+    `<h1>experimental pause instructions group 1</h1>`;
+
+export let PAUSE_EXPRIMENTAL_2 =
+    `<h1>experimental pause instructions group 2</h1>`;
+
 export let PAUSE_INSTRUCTION = `
-    Pauze instructies
+    <p>Pauze instructies</p>
     
-    Druk op de spatiebalk om door te gaan.
+    <p>Druk op de spatiebalk om door te gaan.</p>
 `;
 
 /**
