@@ -148,6 +148,15 @@ export const PRE_TEST_INSTRUCTION =
 export const PREPARE_INSTRUCTION =
     "<h2>Zet je vingers klaar op de knoppen de taak begint</h2>";
 
+export const PRE_ROSENBERG_INSTRUCTION = `
+    <h2>
+        Het experiment is bijna afgelopen er volgt alleen nog een korte
+        vragenlijst.
+    </h2>
+    <p>
+        Druk op de spatiebalk om door te gaan.   
+    </p>
+`;
 
 export const POST_TEST_INSTRUCTION =
     "<h1>Einde van het experiment</h1>"                                 +
