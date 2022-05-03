@@ -114,24 +114,23 @@ const survey_rosenberg = {
     on_finish: function(data) {
         let response = data.response;
         let score = {};
-        let rescore = {};
-        for (let key in data) {
-            score[key] = map_to_score[response.key];
+        let recoded = {};
+        let recode_keys = ["v1", "v3", "v4", "v7", "v10"];
+        for (let key in response) {
+            score[key] = map_to_score[response[key]];
         }
-        for (const [key, value] in Object.entries(score)) {
-            if (key in ["v1", "v3", "v4", "v7", "v10"]) {
-                rescore[key] = 5 - value;
+        for (const [key, value] of Object.entries(score)) {
+            if (recode_keys.includes(key)) {
+                recoded[key] = 5 - value;
             }
             else {
-                rescore[key] = value;
+                recoded[key] = value;
             }
         }
         data.score = score;
-        data.rescore = rescore;
+        data.recoded = recoded;
         let sum = 0;
-        for (const [key, value] in Object.entries(rescore)) {
-            sum += value;
-        }
+        Object.values(recoded).forEach(value => sum += value);
         data.sum = sum;
     }
 };

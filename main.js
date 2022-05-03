@@ -342,7 +342,6 @@ function getTimeline(stimuli) {
     // Welcome the participant and guide them through the 
     // consent forms and survey.
     timeline.push(welcome_screen);
-    timeline.push(rosenberg_procedure)
 
     // Obtain informed consent.
     timeline.push(consent_procedure);
@@ -361,6 +360,8 @@ function getTimeline(stimuli) {
     timeline.push(experimental_items_pre_pause);
     timeline.push(pause);
     timeline.push(experimental_items_post_pause);
+
+    timeline.push(rosenberg_procedure)
     timeline.push(end_experiment);
 
     return timeline
