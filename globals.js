@@ -23,7 +23,7 @@ export const MIN_WIDTH = 1000;
 export const MIN_HEIGHT = 600;
 
 // The default color (for words that don't require a response)
-export const DEFAULT_COLOR = "black";
+export const DEFAULT_COLOR = "white";
 
 export const USED_COLORS = [
     "rood",
@@ -35,7 +35,7 @@ export const USED_COLORS = [
 export let RESPONSE_KEYS = ["1", "2", "9", "0"];
 
 // The ISI will be added after each trial/stimulus
-export const ISI = 500; //ms
+export const ISI_DUR = 150; //ms
 
 // Fragments of text to display on buttons
 export const YES_BUTTON_TEST = "yes"
@@ -90,3 +90,31 @@ export const FEEDBACK_DURATION = 1000;
 // The percentage correct responses required in order to advance
 // from practice to test phase.
 export const REQ_PRAC_CORRECT = 75;
+
+// The table in stimuli.js should be repeated a number of times.
+// Since there are a number of repetition before and after a pause
+// it should be divisible by 2 without remainder.
+export const NUM_REPETITIONS = 2;
+
+// Whether to run the rosenberg survey.
+export const RUN_ROSENBERG = true;
+
+// The allowed groups in this experiment. Can be replaced by other names,
+// note that this should happen in unison with the defined groups on the
+// data server.
+export const GROUPS = [
+    "group1", // Instructions with 1
+    "group2", // Instructions with 2,
+    "group3", // Instructions with 3_4 + Rosenberg questionnaire
+    "group4"  // Instructions with 3_4 + Rosenberg questionnaire
+];
+
+export const INSTRUCTION_GROUPS = [
+    GROUPS[0],
+    GROUPS[1]
+];
+
+export const ROSENBERG_GROUPS = [
+    GROUPS[2],
+    GROUPS[3],
+]

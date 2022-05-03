@@ -38,7 +38,7 @@ const IF_REQUIRED_FEEDBACK_MESSAGE =
     "in order to proceed to the experiment.";
 
 // Adds UU styling to the consent forms.
-const CONSENT_HTML_STYLE_UU = `<style>
+let CONSENT_HTML_STYLE_UU = `<style>
         body {
             background: rgb(246, 246, 246);
             font-family: "Open Sans","Frutiger",Helvetica,Arial,sans-serif;
@@ -160,6 +160,8 @@ const CONSENT_HTML_STYLE_UU = `<style>
 
         </style>
         `;
+
+CONSENT_HTML_STYLE_UU = "";
 
 // displays the informed consent page
 let consent_block = {
