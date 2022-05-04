@@ -52,10 +52,10 @@ export let PRE_EXPERIMENT_EXPRIMENTAL_1 =
 export let PRE_EXPERIMENT_EXPRIMENTAL_2 =
     `<h1>experimental instructions group 2</h1>`;
 
-export let PAUSE_EXPRIMENTAL_1 =
+export let PAUSE_EXPERIMENTAL_1 =
     `<h1>experimental pause instructions group 1</h1>`;
 
-export let PAUSE_EXPRIMENTAL_2 =
+export let PAUSE_EXPERIMENTAL_2 =
     `<h1>experimental pause instructions group 2</h1>`;
 
 export let PAUSE_INSTRUCTION = `
