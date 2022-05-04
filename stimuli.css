@@ -8,12 +8,13 @@ body {
 }
 
 p.word {
-    font-family: DejavuSansMono;
+    font-family: "Open Sans", Arial;
     font-size: 40px;
     font-weight: bold;
 }
+
 p.target {
-    font-family: DejavuSansMono;
+    font-family: "Open Sans", Arial;
     font-size: 50px;
     font-weight: bold;
 }
@@ -47,7 +48,7 @@ p.blue {
 }
 
 p.feedback {
-    font-family: DejavuSansMono;
+    font-family: "Open Sans", Arial;
     font-size: 30px;
 }
 
