@@ -10,19 +10,10 @@ let repeat_survey = false;
 
 const AGE_PROMPT = "<p>Vul alsjeblieft onderstaande velden in:</p>";
 const AGE_HTML = `
-    <label for="birth_year">In welk jaar ben je geboren? </label>
-    <input type="number" id="birth_year" 
-        name="birth_year" placeholder=1999 min=1919 max=2019 required>
+    <label for="age">Wat is je leeftijd in jaren? </label>
+    <input type="number" id="age" 
+        name="age" value=17 min=0 max=200 required>
     <span class="validity"></span>
-
-    <br>
-    <br>
-
-    <label for="birth_month">In welke maand ben je geboren? </label>
-    <input type="number" id="birth_month" name="birth_month" 
-        placeholder=7 min=1 max=12 required>
-    <span class="validity"></span>
-
     <br>
     <br>
     `;
@@ -197,8 +188,7 @@ let survey_review = {
         let survey_2_data = 
             jsPsych.data.get().last(1).values()[0].response;
         
-        let b_year = survey_1_data.birth_year;
-        let b_month = survey_1_data.birth_month;
+        let age = survey_1_data.age;
 
         let nativelang = survey_2_data.NativeLanguage;
 		let multilingual = survey_2_data.Multilingual;
@@ -215,8 +205,7 @@ let survey_review = {
         return `
             <h1>Je antwoorden:</h1>
 
-            <div><strong>Geboortejaar</strong>: ${b_year} </div>
-            <div><strong>Geboortemaand</strong>: ${b_month} </div>
+            <div><strong>age</strong>: ${age} </div>
             <div><strong>Moedertaal Nederlands</strong>: ${nativelang} </div>
             <div><strong>Meertalig opgevoed</strong>: ${multilingual} </div>
 			<div><strong>Educatie</strong>: ${education} </div>
@@ -270,34 +259,42 @@ let survey_check_rejection = {
         console.log(survey_1);
         console.log(survey_2);
         
-        if (survey_1.birth_year < 1991 || survey_1.birth_year > 2004) {
+        if (survey_1.age < 18) {
             console.log("age requirement not met");
             retval = true;
-		};
-		if (survey_2.NativeLanguage == "Nee") {
+		}
+		if (survey_2.NativeLanguage === "Nee") {
 			console.log("native language not Dutch");
 			retval = true;
-		};
-        if (survey_2.Student == "Nee") {
+		}
+        if (survey_2.Student === "Nee") {
             console.log("geen student");
             retval = true;
         }
-		if (survey_2.Dyslexic == "Ja") {
+		if (survey_2.Dyslexic === "Ja") {
 			console.log("has dyslexia");
 			retval = true;
-		};
-		if (survey_2.LanguageDisorder == "Ja") {
+		}
+		if (survey_2.LanguageDisorder === "Ja") {
 			console.log("has language disorder");
 			retval = true;
-        };
+        }
         if (survey_2.ColorBlindness === "Ja") {
 			console.log("has color blindness.");
 			retval = true;
         }
-		if (survey_2.Device == "Anders") {
+        if (survey_2.HandPreference === "Links") {
+            console.log("Not right handed.");
+            retval = true;
+        }
+        if (survey_2.Sex !== "Vrouwlijk") {
+            console.log("Not female.");
+            retval = true;
+        }
+		if (survey_2.Device === "Anders") {
 			console.log("is not using a laptop or PC");
 			retval = true;
-        };
+        }
 		return retval;
     }
 };
