@@ -1,5 +1,7 @@
 import {jsPsych} from "./init-jspsych.js";
 import * as global from "./globals.js";
+import {chosen_group} from "./main.js";
+import {INSTRUCTION_GROUPS, ROSENBERG_GROUPS} from "./globals.js";
 
 // Keeps track whether or not consent has been given.
 export let consent_given = false;
@@ -9,13 +11,33 @@ export let consent_given = false;
  * You should fillout the contents of your information letter here.
  * It is displayed as html, the current html should be replace with
  * your information letter.
+ *
+ * This is shown to groups 1 and 2
  */
-const CONSENT_HTML = 
+const CONSENT_HTML_12 =
+    '<H3>Group 1 of 2 </H3>' +
     '<p>' +
         'Insert your information letter here; for more information, see the '  +
         '<a href="https://fetc-gw.wp.hum.uu.nl/en/" target="_blank"> '         +
             'FEtC-H website'                                                   +
         '</a>'                                                                 +
+    '</p>';
+
+/*
+ * This fragment of html will be displayed in the beginning of you experiment.
+ * You should fillout the contents of your information letter here.
+ * It is displayed as html, the current html should be replace with
+ * your information letter.
+ *
+ * This is shown to groups 1 and 2
+ */
+const CONSENT_HTML_34 =
+    '<H3>Group 3 of 4 </H3>' +
+    '<p>' +
+    'Insert your information letter here; for more information, see the '  +
+    '<a href="https://fetc-gw.wp.hum.uu.nl/en/" target="_blank"> '         +
+    'FEtC-H website'                                                   +
+    '</a>'                                                                 +
     '</p>';
 
 /*
@@ -163,11 +185,11 @@ let CONSENT_HTML_STYLE_UU = `<style>
 
 CONSENT_HTML_STYLE_UU = "";
 
-// displays the informed consent page
-let consent_block = {
+// displays the informed consent page for groups 1 and 2
+let consent_block_12 = {
     type: jsPsychSurveyMultiSelect,
     data : {uil_save : true},
-    preamble: CONSENT_HTML_STYLE_UU + CONSENT_HTML,
+    preamble: CONSENT_HTML_STYLE_UU + CONSENT_HTML_12,
     required_message: IF_REQUIRED_FEEDBACK_MESSAGE,
     questions: [
         {
@@ -184,6 +206,42 @@ let consent_block = {
         data.consent_choice_response = consent_choice;
     }
 };
+
+// displays the informed consent page for groups 3 and 4
+let consent_block_34 = {
+    type: jsPsychSurveyMultiSelect,
+    data : {uil_save : true},
+    preamble: CONSENT_HTML_STYLE_UU + CONSENT_HTML_34,
+    required_message: IF_REQUIRED_FEEDBACK_MESSAGE,
+    questions: [
+        {
+            prompt: "",
+            options: [CONSENT_STATEMENT],
+            horizontal: true,
+            required: false,
+            button_label: global.CONTINUE_BUTTON_TEXT,
+            name: CONSENT_REFERENCE_NAME
+        }
+    ],
+    on_finish: function(data) {
+        let consent_choice = data.response;
+        data.consent_choice_response = consent_choice;
+    }
+};
+
+let if_consent_group_12 = {
+    timeline : [consent_block_12],
+    conditional_function : function () {
+        return INSTRUCTION_GROUPS.includes(chosen_group);
+    }
+}
+
+let if_consent_group_34 = {
+    timeline : [consent_block_34],
+    conditional_function : function () {
+        return ROSENBERG_GROUPS.includes(chosen_group);
+    }
+}
 
 
 // Is displayed when no consent has been given.
@@ -228,6 +286,6 @@ let if_node_consent = {
 }
 
 export let consent_procedure = {
-    timeline: [consent_block, if_node_consent]
+    timeline: [if_consent_group_12, if_consent_group_34, if_node_consent]
 }
 
