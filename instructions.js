@@ -52,10 +52,10 @@ export let PRE_EXPERIMENT_EXPRIMENTAL_1 =
 export let PRE_EXPERIMENT_EXPRIMENTAL_2 =
     `<h1>experimental instructions group 2</h1>`;
 
-export let PAUSE_EXPRIMENTAL_1 =
+export let PAUSE_EXPERIMENTAL_1 =
     `<h1>experimental pause instructions group 1</h1>`;
 
-export let PAUSE_EXPRIMENTAL_2 =
+export let PAUSE_EXPERIMENTAL_2 =
     `<h1>experimental pause instructions group 2</h1>`;
 
 export let PAUSE_INSTRUCTION = `
@@ -148,6 +148,15 @@ export const PRE_TEST_INSTRUCTION =
 export const PREPARE_INSTRUCTION =
     "<h2>Zet je vingers klaar op de knoppen de taak begint</h2>";
 
+export const PRE_ROSENBERG_INSTRUCTION = `
+    <h2>
+        Het experiment is bijna afgelopen er volgt alleen nog een korte
+        vragenlijst.
+    </h2>
+    <p>
+        Druk op de spatiebalk om door te gaan.   
+    </p>
+`;
 
 export const POST_TEST_INSTRUCTION =
     "<h1>Einde van het experiment</h1>"                                 +
@@ -157,4 +166,17 @@ export const FINISHED_NO_CONSENT =
     "<h1>Het experient gaat niet door omdat je niet akkoord ben gegaan " +
     "met het geïnformeerde toestemmingsformulier</h1>"                   +
     "<p>Je kan dit tabblad sluiten.</p>";
+
+export const FINISHED_REJECTION = `
+<h1>
+    Helaas voldoe je niet aan de vereisten
+    om mee te kunnen doen aan dit experiment.
+</h1>
+</h2>
+    Alsnog hartelijk dank voor je interesse en we wensen je een prettige dag.
+</h2>
+<p>
+    Je kunt dit tabblad nu sluiten.
+</p>
+`;
 

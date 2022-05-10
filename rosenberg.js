@@ -1,6 +1,7 @@
 import {jsPsych} from "./init-jspsych.js";
 import * as global from "./globals.js";
 import {chosen_group} from "./main.js";
+import {PRE_ROSENBERG_INSTRUCTION} from "./instructions.js";
 
 const PREAMBLE = "Kies één van de antwoorden onder de vragen hieronder.";
 
@@ -136,8 +137,15 @@ const survey_rosenberg = {
     }
 };
 
+let rosenberg_instruction = {
+    type: jsPsychHtmlKeyboardResponse,
+    choices : [" "],
+    stimulus : PRE_ROSENBERG_INSTRUCTION
+}
+
 export let if_rosenberg= {
     timeline : [
+        rosenberg_instruction,
         survey_rosenberg
     ],
     conditional_function : function () {

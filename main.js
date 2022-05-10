@@ -18,7 +18,11 @@ import {
     POST_TEST_INSTRUCTION,
     PREPARE_INSTRUCTION,
     FINISHED_NO_CONSENT,
-    PAUSE_INSTRUCTION, PRE_EXPERIMENT_EXPRIMENTAL_1, PRE_EXPERIMENT_EXPRIMENTAL_2, PAUSE_EXPRIMENTAL_2
+    PAUSE_INSTRUCTION,
+    PRE_EXPERIMENT_EXPRIMENTAL_1,
+    PRE_EXPERIMENT_EXPRIMENTAL_2,
+    PAUSE_EXPERIMENTAL_1,
+    PAUSE_EXPERIMENTAL_2
 } from "./instructions.js";
 
 import PracticeStats from "./practice-stats.js";
@@ -212,9 +216,9 @@ function getTimeline(stimuli) {
         stimulus : function() {
             console.assert(global.INSTRUCTION_GROUPS.includes(chosen_group));
             if (chosen_group === INSTRUCTION_GROUPS[0])
-                return PAUSE_EXPRIMENTAL_1;
+                return PAUSE_EXPERIMENTAL_1;
             else
-                return PAUSE_EXPRIMENTAL_2;
+                return PAUSE_EXPERIMENTAL_2;
         }
     }
 
@@ -345,9 +349,12 @@ function getTimeline(stimuli) {
         });
 
         if (global.PSEUDO_RANDOMIZE) {
-            let shuffled = uil.randomization.randomizeStimuli(
+            let shuffled = uil.randomization.randomizeStimuliConstraints(
                 stims,
-                global.MAX_SUCCEEDING_ITEMS_OF_TYPE
+                {
+                    item_type : global.MAX_SUCCEEDING_ITEMS_OF_TYPE,
+                    color :     global.MAX_SUCCEEDING_ITEMS_OF_TYPE
+                }
             );
             if (shuffled !== null)
                 stims = shuffled;
