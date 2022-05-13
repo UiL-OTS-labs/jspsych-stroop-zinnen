@@ -21,6 +21,7 @@ import {
     PAUSE_INSTRUCTION,
     PRE_EXPERIMENT_EXPRIMENTAL_1,
     PRE_EXPERIMENT_EXPRIMENTAL_2,
+    PRE_EXPERIMENT_QUESTION,
     PAUSE_EXPERIMENTAL_1,
     PAUSE_EXPERIMENTAL_2
 } from "./instructions.js";
@@ -29,7 +30,7 @@ import PracticeStats from "./practice-stats.js";
 import {consent_procedure, consent_given} from "./consent.js";
 import {survey_procedure} from "./survey.js";
 import {if_rosenberg} from "./rosenberg.js";
-import {INSTRUCTION_GROUPS} from "./globals.js";
+import {CONTINUE_BUTTON_TEXT, GROUPS, INSTRUCTION_GROUPS} from "./globals.js";
 
 export {main};
 
@@ -190,17 +191,64 @@ function getTimeline(stimuli) {
         response_ends_trial : true
     };
 
-    let experimental_instruction = {
-        type : jsPsychHtmlKeyboardResponse,
-        choices : [' '],
-        stimulus : function() {
-            console.assert(global.INSTRUCTION_GROUPS.includes(chosen_group));
-            if (chosen_group === INSTRUCTION_GROUPS[0])
-                return PRE_EXPERIMENT_EXPRIMENTAL_1;
-            else
-                return PRE_EXPERIMENT_EXPRIMENTAL_2;
+    let experimental_instruction_1 = {
+        type : jsPsychSurveyText,
+        preamble : PRE_EXPERIMENT_EXPRIMENTAL_1,
+        button_label : CONTINUE_BUTTON_TEXT,
+        questions : [
+            {
+                prompt:PRE_EXPERIMENT_QUESTION,
+                required : true,
+                rows : 5,
+                name : "Description"
+            }
+        ],
+        on_save: function (data) {
+            data.uil_save = true;
         }
-    }
+    };
+
+    let experimental_instruction_2 = {
+        type : jsPsychSurveyText,
+        preamble : PRE_EXPERIMENT_EXPRIMENTAL_2,
+        button_label : CONTINUE_BUTTON_TEXT,
+        questions : [
+            {
+                prompt:PRE_EXPERIMENT_QUESTION,
+                required : true,
+                rows : 5,
+                name : "Description"
+            }
+        ],
+        on_save: function (data) {
+            data.uil_save = true;
+        }
+    };
+
+    let if_experimental_instruction_1 = {
+        timeline : [experimental_instruction_1],
+        conditional_function() {
+            return chosen_group === INSTRUCTION_GROUPS[0];
+        }
+    };
+
+    let if_experimental_instruction_2 = {
+        timeline : [experimental_instruction_2],
+        conditional_function() {
+            return chosen_group === INSTRUCTION_GROUPS[1];
+        }
+    };
+
+    let experimental_instruction = {
+        timeline : [
+            {
+                timeline : [
+                    if_experimental_instruction_1,
+                    if_experimental_instruction_2
+                ]
+            }
+        ]
+    };
 
     let if_experimental_instruction = {
         timeline : [experimental_instruction],
