@@ -21,7 +21,6 @@ const AGE_HTML = `
 const survey_1 = {
     type :      jsPsychSurveyHtmlForm,
     data: {
-        uil_save : true,
         survey_data_flag: true
     },
     preamble :  AGE_PROMPT,
@@ -30,6 +29,7 @@ const survey_1 = {
     // flatten json output
     on_finish : function(data) {
         data.rt = Math.round(data.rt);
+        data.uil_save = true;
     }
 };
 
@@ -90,7 +90,6 @@ const OPERATING_OPTIONS = ["Microsoft Windows", "Apple macOS", "Linux", "Anders"
 const survey_2 = {
     type: jsPsychSurveyMultiChoice,
     data: {
-        uil_save : true,
         survey_data_flag : true
     },
     questions: [
@@ -174,6 +173,7 @@ const survey_2 = {
     ],
 
     on_finish: function(data) {
+        uil_save : true,
         data.rt = Math.round(data.rt);
     }
 };
