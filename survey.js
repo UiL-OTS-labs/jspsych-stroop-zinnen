@@ -21,7 +21,6 @@ const AGE_HTML = `
 const survey_1 = {
     type :      jsPsychSurveyHtmlForm,
     data: {
-        uil_save : true,
         survey_data_flag: true
     },
     preamble :  AGE_PROMPT,
@@ -30,6 +29,7 @@ const survey_1 = {
     // flatten json output
     on_finish : function(data) {
         data.rt = Math.round(data.rt);
+        data.uil_save = true;
     }
 };
 
@@ -90,7 +90,6 @@ const OPERATING_OPTIONS = ["Microsoft Windows", "Apple macOS", "Linux", "Anders"
 const survey_2 = {
     type: jsPsychSurveyMultiChoice,
     data: {
-        uil_save : true,
         survey_data_flag : true
     },
     questions: [
@@ -174,6 +173,7 @@ const survey_2 = {
     ],
 
     on_finish: function(data) {
+        uil_save : true,
         data.rt = Math.round(data.rt);
     }
 };
@@ -263,11 +263,11 @@ let survey_check_rejection = {
             console.log("age requirement not met");
             retval = true;
 		}
-		if (survey_2.NativeLanguage === "Nee") {
+		if (survey_2.NativeLanguage === NATIVE_OPTIONS[0]) {
 			console.log("native language not Dutch");
 			retval = true;
 		}
-        if (survey_2.Student === "Nee") {
+        if (survey_2.Student === STUDENT_OPTIONS[0]) {
             console.log("geen student");
             retval = true;
         }
@@ -275,23 +275,23 @@ let survey_check_rejection = {
 			console.log("has dyslexia");
 			retval = true;
 		}
-		if (survey_2.LanguageDisorder === "Ja") {
+		if (survey_2.LanguageDisorder === DYSLEXIC_OPTIONS[1]) {
 			console.log("has language disorder");
 			retval = true;
         }
-        if (survey_2.ColorBlindness === "Ja") {
+        if (survey_2.ColorBlindness === COLOR_OPTIONS[1]) {
 			console.log("has color blindness.");
 			retval = true;
         }
-        if (survey_2.HandPreference === "Links") {
+        if (survey_2.HandPreference === HAND_OPTIONS[0]) {
             console.log("Not right handed.");
             retval = true;
         }
-        if (survey_2.Sex !== "Vrouwlijk") {
+        if (survey_2.Sex !== SEX_OPTIONS[0]) {
             console.log("Not female.");
             retval = true;
         }
-		if (survey_2.Device === "Anders") {
+		if (survey_2.Device === DEVICE_OPTIONS[1]) {
 			console.log("is not using a laptop or PC");
 			retval = true;
         }

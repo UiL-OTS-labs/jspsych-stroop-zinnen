@@ -52,6 +52,11 @@ export let PRE_EXPERIMENT_EXPRIMENTAL_1 =
 export let PRE_EXPERIMENT_EXPRIMENTAL_2 =
     `<h1>experimental instructions group 2</h1>`;
 
+// Question by the two instructions above
+export let PRE_EXPERIMENT_QUESTION =
+    "Wil je in het kort uitleggen over wie je in je gedachten hebt en " +
+    "wat voor iemand dat is?";
+
 export let PAUSE_EXPERIMENTAL_1 =
     `<h1>experimental pause instructions group 1</h1>`;
 

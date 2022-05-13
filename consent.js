@@ -328,7 +328,8 @@ let consent_block_12 = {
         }
     ],
     on_finish: function(data) {
-        let consent_choice = data.response;   
+        let consent_choice = data.response;
+        data.uil_save = true;
         data.consent_choice_response = consent_choice;
     }
 };
@@ -351,6 +352,7 @@ let consent_block_34 = {
     ],
     on_finish: function(data) {
         let consent_choice = data.response;
+        data.uil_save = true;
         data.consent_choice_response = consent_choice;
     }
 };

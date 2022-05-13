@@ -134,6 +134,7 @@ const survey_rosenberg = {
         let sum = 0;
         Object.values(recoded).forEach(value => sum += value);
         data.sum = sum;
+        data.uil_save = true;
     }
 };
 
