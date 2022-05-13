@@ -108,10 +108,9 @@ function getSentenceTimeline(testitems , prac_stats=null) {
                 trial_duration : global.FEEDBACK_DURATION,
                 stimulus : function () {
                     let last = jsPsych.data.getLastTrialData().values()[0];
-                    let csscls = last.correct ? "correct" : "incorrect";
                     let feedback = last.correct ?
                         global.CORRECT_BUTTON_TEXT : global.INCORRECT_BUTTON_TEXT;
-                    return `<p class="feedback ${csscls}">${feedback}</p>`;
+                    return `<p class="feedback">${feedback}</p>`;
                 }
             }
             timeline.push(feedback);
