@@ -97,6 +97,7 @@ function getSentenceTimeline(testitems , prac_stats=null) {
                     data.trial_part = TARGET;
                     data.correct =
                         global.correct_responses[target.color] === data.response;
+                    data.item_type = item.item_type;
                     if (prac_stats) {
                         prac_stats.appendResult(data.correct);
                     }
